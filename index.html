@@ -341,6 +341,7 @@
 <script>
 const STORE = 'keygen_keys';
 const AUTH  = 'keygen_auth';
+const SCHEMA_VERSION = 2;
 
 const USER = 'Rnzzk';
 const PASS = 'Rnzzk123';
@@ -372,6 +373,28 @@ const $list      = document.getElementById('list');
 const $stats     = document.getElementById('stats');
 
 let selectedTier = '1';
+
+// --- migração de schema -----------------------------------------------
+// v1 = keys em formato hash "01D-XXXXXXXX-XXXXXXXX-XXXXXXXX"
+// v2 = key = id do discord (só dígitos)
+// ao subir pra v2, qualquer key que não seja só dígitos é descartada.
+function migrate() {
+  const current = parseInt(localStorage.getItem(STORE + '_v') || '1', 10);
+  if (current >= SCHEMA_VERSION) return;
+
+  try {
+    const raw = JSON.parse(localStorage.getItem(STORE)) || [];
+    const kept = raw.filter(k =>
+      k && typeof k.key === 'string' && /^\d{17,20}$/.test(k.key)
+    );
+    localStorage.setItem(STORE, JSON.stringify(kept));
+  } catch {
+    localStorage.removeItem(STORE);
+  }
+
+  localStorage.setItem(STORE + '_v', String(SCHEMA_VERSION));
+}
+// ----------------------------------------------------------------------
 
 function load() {
   try { return JSON.parse(localStorage.getItem(STORE)) || []; }
@@ -549,6 +572,9 @@ $copy.addEventListener('click', () => {
   $copy.textContent = 'copiado';
   setTimeout(() => $copy.textContent = 'copiar', 1200);
 });
+
+// roda migração antes de qualquer render
+migrate();
 
 if (sessionStorage.getItem(AUTH) === '1') {
   enterApp();
