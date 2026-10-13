@@ -6,215 +6,128 @@
 <title>KeyGen</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   :root {
-    --bg: #0a0a0f;
-    --panel: #12121a;
-    --border: #1f1f2e;
-    --accent: #5865f2;
-    --accent-hover: #4752c4;
-    --text: #e6e6f0;
-    --muted: #6b6b85;
-    --ok: #3ba55d;
-    --err: #ed4245;
-    --warn: #faa81a;
+    --bg: #0a0a0f; --panel: #12121a; --border: #1f1f2e;
+    --accent: #5865f2; --accent-hover: #4752c4;
+    --text: #e6e6f0; --muted: #6b6b85;
+    --ok: #3ba55d; --err: #ed4245; --warn: #faa81a;
   }
-
   body {
-    background: var(--bg);
-    color: var(--text);
+    background: var(--bg); color: var(--text);
     font-family: 'Segoe UI', system-ui, sans-serif;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
+    min-height: 100vh; display: flex; align-items: center;
+    justify-content: center; padding: 24px;
     background-image:
       radial-gradient(circle at 20% 20%, rgba(88,101,242,0.08), transparent 40%),
       radial-gradient(circle at 80% 80%, rgba(88,101,242,0.05), transparent 40%);
   }
-
   .card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 40px;
-    width: 100%;
-    max-width: 640px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 16px; padding: 40px; width: 100%;
+    max-width: 640px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
   }
-
   .logo { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
-
-  .logo-dot {
-    width: 12px; height: 12px; border-radius: 50%;
-    background: var(--accent); box-shadow: 0 0 12px var(--accent);
-  }
-
+  .logo-dot { width: 12px; height: 12px; border-radius: 50%;
+    background: var(--accent); box-shadow: 0 0 12px var(--accent); }
   h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; }
-
   .sub { color: var(--muted); font-size: 13px; margin-bottom: 32px; }
-
-  label {
-    display: block; font-size: 12px; color: var(--muted);
-    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;
-  }
-
+  label { display: block; font-size: 12px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
   input {
     width: 100%; background: #0a0a0f; border: 1px solid var(--border);
     border-radius: 10px; padding: 14px 16px; color: var(--text);
-    font-size: 15px; font-family: 'Consolas', monospace;
-    outline: none; transition: border-color 0.15s; margin-bottom: 16px;
+    font-size: 15px; font-family: 'Consolas', monospace; outline: none;
+    transition: border-color 0.15s; margin-bottom: 16px;
   }
-
   input:focus { border-color: var(--accent); }
-
   button {
     width: 100%; background: var(--accent); color: #fff; border: none;
     border-radius: 10px; padding: 14px; font-size: 15px; font-weight: 600;
-    cursor: pointer; margin-top: 4px;
-    transition: background 0.15s, transform 0.05s;
+    cursor: pointer; margin-top: 4px; transition: background 0.15s;
   }
-
   button:hover { background: var(--accent-hover); }
-  button:active { transform: scale(0.99); }
-
+  button:disabled { opacity: 0.6; cursor: not-allowed; }
   .out {
     margin-top: 20px; background: #0a0a0f; border: 1px solid var(--border);
     border-radius: 10px; padding: 16px; font-family: 'Consolas', monospace;
     font-size: 13px; display: none; align-items: center;
     justify-content: space-between; gap: 12px;
   }
-
   .out.show { display: flex; }
   .out.ok { border-color: var(--ok); }
   .out.err { border-color: var(--err); }
-
   .out-text { word-break: break-all; }
   .out.ok .out-text { color: var(--ok); }
   .out.err .out-text { color: var(--err); }
-
-  .copy {
-    background: transparent; border: 1px solid var(--border);
+  .copy { background: transparent; border: 1px solid var(--border);
     color: var(--muted); padding: 6px 12px; border-radius: 6px;
-    font-size: 11px; cursor: pointer; width: auto; margin: 0; white-space: nowrap;
-  }
-
+    font-size: 11px; cursor: pointer; width: auto; margin: 0; white-space: nowrap; }
   .copy:hover { border-color: var(--accent); color: var(--text); }
-
   .list { margin-top: 28px; border-top: 1px solid var(--border); padding-top: 20px; }
-
-  .list h2 {
-    font-size: 12px; color: var(--muted); text-transform: uppercase;
-    letter-spacing: 0.5px; margin-bottom: 12px;
-  }
-
-  .item {
-    padding: 14px 0; font-family: 'Consolas', monospace;
-    font-size: 13px; border-bottom: 1px solid var(--border);
-  }
-
+  .list h2 { font-size: 12px; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.5px; margin-bottom: 12px; }
+  .item { padding: 14px 0; font-family: 'Consolas', monospace;
+    font-size: 13px; border-bottom: 1px solid var(--border); }
   .item:last-child { border-bottom: none; }
-
   .item.paused { opacity: 0.7; }
-
-  .item .row1 {
-    display: flex; justify-content: space-between;
-    align-items: center; gap: 8px;
-  }
-
-  .item .row2 {
-    display: flex; justify-content: space-between; align-items: center;
-    gap: 8px; margin-top: 4px; font-size: 11px; color: var(--muted);
-  }
-
-  .item .key-val { word-break: break-all; font-size: 13px; }
-
-  .item .actions {
-    display: flex; gap: 8px; margin-top: 12px;
-  }
-
+  .item .row1 { display: flex; justify-content: space-between;
+    align-items: center; gap: 8px; }
+  .item .row2 { display: flex; justify-content: space-between;
+    align-items: center; gap: 8px; margin-top: 4px; font-size: 11px;
+    color: var(--muted); }
+  .item .key-val { word-break: break-all; }
+  .item .actions { display: flex; gap: 8px; margin-top: 12px; }
   .btn-sm {
-    border-radius: 8px; padding: 8px 14px; font-size: 12px;
-    font-weight: 600; cursor: pointer; width: auto; margin: 0;
-    background: transparent; border: 1px solid var(--border);
-    color: var(--text); transition: all 0.15s;
+    border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 600;
+    cursor: pointer; width: auto; margin: 0; background: transparent;
+    border: 1px solid var(--border); color: var(--text);
+    transition: all 0.15s;
   }
-
   .btn-sm.pause  { border-color: var(--warn); color: var(--warn); }
   .btn-sm.pause:hover  { background: rgba(250,168,26,0.12); }
-
   .btn-sm.resume { border-color: var(--ok); color: var(--ok); }
   .btn-sm.resume:hover { background: rgba(59,165,93,0.12); }
-
   .btn-sm.del    { border-color: var(--err); color: var(--err); }
   .btn-sm.del:hover    { background: rgba(237,66,69,0.12); }
-
   .badge {
     display: inline-block; padding: 2px 8px; border-radius: 999px;
     font-size: 10px; font-weight: 600; letter-spacing: 0.5px;
     text-transform: uppercase; border: 1px solid currentColor;
     white-space: nowrap;
   }
-
-  .badge.d1  { color: #6bb5ff; }
-  .badge.d7  { color: #9b8bff; }
-  .badge.d30 { color: #ff9b6b; }
-  .badge.life { color: var(--ok); }
-  .badge.expired { color: var(--err); }
-  .badge.paused  { color: var(--warn); }
-
+  .badge.d1 { color: #6bb5ff; } .badge.d7 { color: #9b8bff; }
+  .badge.d30 { color: #ff9b6b; } .badge.life { color: var(--ok); }
+  .badge.expired { color: var(--err); } .badge.paused { color: var(--warn); }
   .empty { color: var(--muted); font-size: 13px; font-style: italic; }
-
   .hidden { display: none !important; }
-
-  .logout {
-    background: transparent; border: 1px solid var(--border);
+  .logout { background: transparent; border: 1px solid var(--border);
     color: var(--muted); padding: 8px 14px; border-radius: 8px;
     font-size: 12px; font-weight: 500; cursor: pointer;
-    width: auto; margin: 0; float: right;
-  }
-
-  .logout:hover { border-color: var(--err); color: var(--err); background: transparent; }
-
-  .tiers {
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    gap: 8px; margin-bottom: 20px;
-  }
-
-  .tier {
-    background: #0a0a0f; border: 1px solid var(--border);
+    width: auto; margin: 0; float: right; }
+  .logout:hover { border-color: var(--err); color: var(--err); }
+  .tiers { display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 8px; margin-bottom: 20px; }
+  .tier { background: #0a0a0f; border: 1px solid var(--border);
     border-radius: 10px; padding: 14px 8px; text-align: center;
     cursor: pointer; transition: border-color 0.15s, background 0.15s;
-    user-select: none;
-  }
-
+    user-select: none; }
   .tier:hover { border-color: var(--accent); }
-
-  .tier.active {
-    border-color: var(--accent);
-    background: rgba(88,101,242,0.12);
-  }
-
+  .tier.active { border-color: var(--accent);
+    background: rgba(88,101,242,0.12); }
   .tier .t-label { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
-
-  .tier .t-desc {
-    font-size: 10px; color: var(--muted);
-    text-transform: uppercase; letter-spacing: 0.5px;
-  }
-
+  .tier .t-desc { font-size: 10px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.5px; }
   .tier.active .t-label { color: var(--accent); }
-
-  .stats {
-    display: flex; gap: 16px; flex-wrap: wrap;
-    margin-top: 12px; font-size: 11px; color: var(--muted);
-  }
-
+  .stats { display: flex; gap: 16px; flex-wrap: wrap;
+    margin-top: 12px; font-size: 11px; color: var(--muted); }
   .stats .s-paused { color: var(--warn); }
   .stats .s-active { color: var(--ok); }
+  .who { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+  .who b { color: var(--text); }
 </style>
 </head>
 <body>
+  <!-- LOGIN -->
   <div class="card" id="loginCard">
     <div class="logo">
       <div class="logo-dot"></div>
@@ -222,8 +135,8 @@
     </div>
     <p class="sub">faça login pra continuar</p>
 
-    <label for="user">usuário</label>
-    <input id="user" type="text" placeholder="usuário" autocomplete="off" spellcheck="false">
+    <label for="email">email</label>
+    <input id="email" type="email" placeholder="ex: evilcorp@gmail.com" autocomplete="off" spellcheck="false">
 
     <label for="pass">senha</label>
     <input id="pass" type="password" placeholder="senha" autocomplete="off">
@@ -235,12 +148,14 @@
     </div>
   </div>
 
+  <!-- APP -->
   <div class="card hidden" id="appCard">
     <div class="logo">
       <div class="logo-dot"></div>
       <h1>KeyGen</h1>
     </div>
-    <p class="sub" style="margin-bottom:16px">gere uma key a partir do id do discord</p>
+    <p class="sub" style="margin-bottom:8px">gere uma key a partir do id do discord</p>
+    <div class="who">logado como <b id="whoUser">—</b> <span id="whoRole"></span></div>
     <button class="logout" id="logout">sair</button>
     <div style="clear:both; margin-bottom:24px"></div>
 
@@ -277,17 +192,31 @@
     <div class="list">
       <h2>keys geradas</h2>
       <div class="stats" id="stats"></div>
-      <div id="list" style="margin-top:12px;"><div class="empty">nenhuma ainda</div></div>
+      <div id="list" style="margin-top:12px;"><div class="empty">carregando…</div></div>
     </div>
   </div>
 
-<script>
-const STORE = 'keygen_keys';
-const AUTH  = 'keygen_auth';
-const SCHEMA_VERSION = 4;
+<!-- firebase SDK (compat) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
-const USER = 'Rnzzk';
-const PASS = 'Rnzzk123';
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBWaYwkS4Aq8sDudHZR3Q2kqIgdFfzERP8",
+  authDomain: "keygen-b6ee9.firebaseapp.com",
+  databaseURL: "https://keygen-b6ee9-default-rtdb.firebaseio.com",
+  projectId: "keygen-b6ee9",
+  storageBucket: "keygen-b6ee9.firebasestorage.app",
+  messagingSenderId: "743340504481",
+  appId: "1:743340504481:web:bd3101131673d38ffe47e0"
+};
+
+const ADMIN_EMAIL = 'evilcorp@gmail.com';
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db   = firebase.database();
 
 const DAY = 24 * 60 * 60 * 1000;
 
@@ -300,7 +229,7 @@ const TIER_LABEL = {
 
 const $loginCard = document.getElementById('loginCard');
 const $appCard   = document.getElementById('appCard');
-const $user      = document.getElementById('user');
+const $email     = document.getElementById('email');
 const $pass      = document.getElementById('pass');
 const $loginBtn  = document.getElementById('loginBtn');
 const $loginOut  = document.getElementById('loginOut');
@@ -314,103 +243,18 @@ const $outT      = document.getElementById('outText');
 const $copy      = document.getElementById('copy');
 const $list      = document.getElementById('list');
 const $stats     = document.getElementById('stats');
+const $whoUser   = document.getElementById('whoUser');
+const $whoRole   = document.getElementById('whoRole');
 
 let selectedTier = '1';
-
-// --- migração de schema -----------------------------------------------
-// v4: key nasce pausada (pending), e todas antigas são marcadas pausadas
-//     pra forçar liberação manual.
-function migrate() {
-  const current = parseInt(localStorage.getItem(STORE + '_v') || '1', 10);
-  if (current >= SCHEMA_VERSION) return;
-
-  try {
-    const raw = JSON.parse(localStorage.getItem(STORE)) || [];
-    const kept = raw
-      .filter(k => k && typeof k.key === 'string' && /^\d{17,20}$/.test(k.key))
-      .map(k => ({
-        id: k.id,
-        tier: k.tier,
-        key: k.key,
-        issuedAt: k.issuedAt,
-        paused: true,
-        pausedAt: k.pausedAt || k.issuedAt
-      }));
-    localStorage.setItem(STORE, JSON.stringify(kept));
-  } catch {
-    localStorage.removeItem(STORE);
-  }
-
-  localStorage.setItem(STORE + '_v', String(SCHEMA_VERSION));
-}
-// ----------------------------------------------------------------------
-
-function load() {
-  try { return JSON.parse(localStorage.getItem(STORE)) || []; }
-  catch { return []; }
-}
-
-function save(keys) {
-  localStorage.setItem(STORE, JSON.stringify(keys));
-}
-
-function expiresAt(entry) {
-  if (entry.tier === 'life') return Infinity;
-  const dur = parseInt(entry.tier, 10) * DAY;
-  if (entry.paused) {
-    const used = entry.pausedAt - entry.issuedAt;
-    const left = dur - used;
-    return entry.pausedAt + left;
-  }
-  return entry.issuedAt + dur;
-}
-
-function isExpired(entry) {
-  if (entry.paused) return false;
-  return Date.now() > expiresAt(entry);
-}
-
-function isPaused(entry) {
-  return !!entry.paused;
-}
-
-function fmtRemaining(entry) {
-  if (entry.tier === 'life') {
-    return entry.paused ? 'pausada · permanente' : 'permanente';
-  }
-  if (entry.paused) {
-    const dur = parseInt(entry.tier, 10) * DAY;
-    const used = entry.pausedAt - entry.issuedAt;
-    const left = dur - used;
-    const d = Math.floor(left / DAY);
-    const h = Math.floor((left % DAY) / (60 * 60 * 1000));
-    const m = Math.floor((left % (60 * 60 * 1000)) / (60 * 1000));
-    if (d > 0) return `pausada · ${d}d ${h}h restantes`;
-    if (h > 0) return `pausada · ${h}h ${m}m restantes`;
-    return `pausada · ${m}m restantes`;
-  }
-  const ms = expiresAt(entry) - Date.now();
-  if (ms <= 0) return 'expirada';
-  const d = Math.floor(ms / DAY);
-  const h = Math.floor((ms % DAY) / (60 * 60 * 1000));
-  const m = Math.floor((ms % (60 * 60 * 1000)) / (60 * 1000));
-  if (d > 0) return `${d}d ${h}h restantes`;
-  if (h > 0) return `${h}h ${m}m restantes`;
-  return `${m}m restantes`;
-}
-
-function fmtDate(ts) {
-  if (ts === Infinity) return '—';
-  const d = new Date(ts);
-  const pad = n => String(n).padStart(2, '0');
-  return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
+let currentUser  = null;
+let isAdmin      = false;
+let keysCache    = {};
 
 function showLoginMsg(text, kind) {
   $loginOut.className = 'out show ' + kind;
   $loginOutT.textContent = text;
 }
-
 function hideLoginMsg() { $loginOut.className = 'out'; }
 
 function showMsg(text, kind) {
@@ -419,46 +263,97 @@ function showMsg(text, kind) {
   $copy.style.display = kind === 'ok' ? 'block' : 'none';
 }
 
-function renderList() {
-  const keys = load();
+function expiresAt(e) {
+  if (e.tier === 'life') return Infinity;
+  const dur = parseInt(e.tier, 10) * DAY;
+  if (e.paused) {
+    const used = (e.pausedAt || e.issuedAt) - e.issuedAt;
+    return (e.pausedAt || e.issuedAt) + (dur - used);
+  }
+  return e.issuedAt + dur;
+}
+function isExpired(e) { return !e.paused && Date.now() > expiresAt(e); }
 
-  const active  = keys.filter(k => !isPaused(k) && !isExpired(k)).length;
-  const paused  = keys.filter(k => isPaused(k)).length;
-  const expired = keys.filter(k => !isPaused(k) && isExpired(k)).length;
-  const lives   = keys.filter(k => k.tier === 'life').length;
+function fmtRemaining(e) {
+  if (e.tier === 'life') return e.paused ? 'pausada · permanente' : 'permanente';
+  if (e.paused) {
+    const dur = parseInt(e.tier, 10) * DAY;
+    const used = (e.pausedAt || e.issuedAt) - e.issuedAt;
+    const left = dur - used;
+    const d = Math.floor(left / DAY);
+    const h = Math.floor((left % DAY) / (60*60*1000));
+    const m = Math.floor((left % (60*60*1000)) / (60*1000));
+    if (d > 0) return `pausada · ${d}d ${h}h restantes`;
+    if (h > 0) return `pausada · ${h}h ${m}m restantes`;
+    return `pausada · ${m}m restantes`;
+  }
+  const ms = expiresAt(e) - Date.now();
+  if (ms <= 0) return 'expirada';
+  const d = Math.floor(ms / DAY);
+  const h = Math.floor((ms % DAY) / (60*60*1000));
+  const m = Math.floor((ms % (60*60*1000)) / (60*1000));
+  if (d > 0) return `${d}d ${h}h restantes`;
+  if (h > 0) return `${h}h ${m}m restantes`;
+  return `${m}m restantes`;
+}
+function fmtDate(ts) {
+  if (ts === Infinity) return '—';
+  const d = new Date(ts);
+  const p = n => String(n).padStart(2, '0');
+  return `${p(d.getDate())}/${p(d.getMonth()+1)}/${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
+function render() {
+  const entries = Object.values(keysCache);
+
+  const visible = isAdmin
+    ? entries
+    : entries.filter(e => e.owner === currentUser.uid);
+
+  const active  = visible.filter(e => !e.paused && !isExpired(e)).length;
+  const paused  = visible.filter(e => e.paused).length;
+  const expired = visible.filter(e => !e.paused && isExpired(e)).length;
+  const lives   = visible.filter(e => e.tier === 'life').length;
 
   $stats.innerHTML =
-    `<span>total: ${keys.length}</span>` +
+    `<span>total: ${visible.length}</span>` +
     `<span class="s-active">liberadas: ${active}</span>` +
     `<span class="s-paused">pausadas: ${paused}</span>` +
     `<span>expiradas: ${expired}</span>` +
     `<span>lifetime: ${lives}</span>`;
 
-  if (!keys.length) {
+  if (!visible.length) {
     $list.innerHTML = '<div class="empty">nenhuma ainda</div>';
     return;
   }
 
-  // mais recente primeiro
-  const sorted = keys.slice().sort((a, b) => b.issuedAt - a.issuedAt);
+  const sorted = visible.slice().sort((a, b) => b.issuedAt - a.issuedAt);
 
   $list.innerHTML = sorted.map(k => {
     const meta   = TIER_LABEL[k.tier] || TIER_LABEL['1'];
-    const paused = isPaused(k);
+    const paused = !!k.paused;
     const exp    = !paused && isExpired(k);
 
-    let badgeCls = meta.badge;
-    let badgeTxt = meta.label;
-    if (paused) { badgeCls = 'paused';  badgeTxt = 'pausada'; }
+    let badgeCls = meta.badge, badgeTxt = meta.label;
+    if (paused) { badgeCls = 'paused'; badgeTxt = 'pausada'; }
     else if (exp) { badgeCls = 'expired'; badgeTxt = 'expirada'; }
 
     const expLine = k.tier === 'life'
       ? 'sem expiração'
       : 'expira: ' + fmtDate(expiresAt(k));
 
-    const actionBtn = paused
-      ? `<button class="btn-sm resume" data-act="resume" data-ts="${k.issuedAt}">liberar key</button>`
-      : `<button class="btn-sm pause"  data-act="pause"  data-ts="${k.issuedAt}">pausar key</button>`;
+    const ownerLine = isAdmin
+      ? `<div class="row2"><span>dono: ${k.ownerEmail || k.owner}</span><span></span></div>`
+      : '';
+
+    const actions = isAdmin
+      ? `<div class="actions">
+           ${paused
+             ? `<button class="btn-sm resume" data-act="resume" data-key="${k.id}">liberar key</button>`
+             : `<button class="btn-sm pause"  data-act="pause"  data-key="${k.id}">pausar key</button>`}
+           <button class="btn-sm del" data-act="del" data-key="${k.id}">excluir</button>
+         </div>`
+      : '';
 
     return `
       <div class="item ${paused ? 'paused' : ''}">
@@ -466,133 +361,151 @@ function renderList() {
           <div class="key-val">${k.key}</div>
           <span class="badge ${badgeCls}">${badgeTxt}</span>
         </div>
+        ${ownerLine}
         <div class="row2">
-          <span>id: ${k.id}</span>
+          <span>id: ${k.key}</span>
           <span>${fmtRemaining(k)}</span>
         </div>
         <div class="row2">
           <span>emitida: ${fmtDate(k.issuedAt)}</span>
           <span>${expLine}</span>
         </div>
-        <div class="actions">
-          ${actionBtn}
-          <button class="btn-sm del" data-act="del" data-ts="${k.issuedAt}">excluir</button>
-        </div>
+        ${actions}
       </div>`;
   }).join('');
 }
 
-function enterApp() {
-  $loginCard.classList.add('hidden');
-  $appCard.classList.remove('hidden');
-  renderList();
-  $uid.focus();
-}
+auth.onAuthStateChanged(user => {
+  if (user) {
+    currentUser = user;
+    isAdmin = (user.email || '').toLowerCase() === ADMIN_EMAIL.toLowerCase();
 
-function enterLogin() {
-  $appCard.classList.add('hidden');
-  $loginCard.classList.remove('hidden');
-  $user.value = '';
-  $pass.value = '';
-  hideLoginMsg();
-  $user.focus();
-}
+    $whoUser.textContent = user.email;
+    $whoRole.textContent = isAdmin ? '· admin' : '· user';
 
-$loginBtn.addEventListener('click', () => {
-  const u = $user.value.trim();
-  const p = $pass.value;
+    $loginCard.classList.add('hidden');
+    $appCard.classList.remove('hidden');
+    $uid.focus();
 
-  if (!u || !p) { showLoginMsg('preencha usuário e senha', 'err'); return; }
-
-  if (u === USER && p === PASS) {
-    sessionStorage.setItem(AUTH, '1');
-    enterApp();
+    listenKeys();
   } else {
-    showLoginMsg('usuário ou senha incorretos', 'err');
+    currentUser = null;
+    isAdmin = false;
+    keysCache = {};
+    $appCard.classList.add('hidden');
+    $loginCard.classList.remove('hidden');
+    hideLoginMsg();
   }
 });
 
-$pass.addEventListener('keydown', e => { if (e.key === 'Enter') $loginBtn.click(); });
-$user.addEventListener('keydown', e => { if (e.key === 'Enter') $pass.focus(); });
+$loginBtn.addEventListener('click', () => {
+  const email = $email.value.trim();
+  const pass  = $pass.value;
+  if (!email || !pass) { showLoginMsg('preencha email e senha', 'err'); return; }
 
-$logout.addEventListener('click', () => {
-  sessionStorage.removeItem(AUTH);
-  enterLogin();
+  $loginBtn.disabled = true;
+  auth.signInWithEmailAndPassword(email, pass)
+    .catch(err => showLoginMsg(traduzErro(err), 'err'))
+    .finally(() => { $loginBtn.disabled = false; });
 });
+$pass.addEventListener('keydown', e => { if (e.key === 'Enter') $loginBtn.click(); });
+
+$logout.addEventListener('click', () => auth.signOut());
+
+function traduzErro(err) {
+  const m = err && err.code || '';
+  if (m.includes('invalid-email'))       return 'email inválido';
+  if (m.includes('user-not-found'))      return 'usuário não existe';
+  if (m.includes('wrong-password'))      return 'senha incorreta';
+  if (m.includes('invalid-credential'))  return 'email ou senha incorretos';
+  if (m.includes('too-many-requests'))   return 'muitas tentativas, espera um pouco';
+  if (m.includes('network'))             return 'falha de rede';
+  return err.message || 'erro ao entrar';
+}
+
+let detach = null;
+function listenKeys() {
+  if (detach) detach();
+  const ref = db.ref('keys');
+  const cb = ref.on('value', snap => {
+    keysCache = snap.val() || {};
+    render();
+  }, err => {
+    $list.innerHTML = `<div class="empty">erro ao carregar: ${err.message}</div>`;
+  });
+  detach = () => ref.off('value', cb);
+}
 
 $tiers.addEventListener('click', e => {
   const t = e.target.closest('.tier');
   if (!t) return;
   selectedTier = t.dataset.tier;
   $tiers.querySelectorAll('.tier').forEach(el =>
-    el.classList.toggle('active', el === t)
-  );
+    el.classList.toggle('active', el === t));
 });
 
-$gen.addEventListener('click', () => {
+$gen.addEventListener('click', async () => {
   const id = $uid.value.trim();
 
   if (!/^\d{17,20}$/.test(id)) {
     showMsg('id inválido (17–20 dígitos numéricos)', 'err');
     return;
   }
-
-  const keys = load();
-  const existing = keys.find(k => k.id === id && k.tier === selectedTier);
-  if (existing) {
-    showMsg('já existe key desse tier pra esse id', 'err');
+  if (keysCache[id]) {
+    showMsg('já existe key pra esse id', 'err');
     return;
   }
 
   const now = Date.now();
-  const key = id;
-  // nasce pausada — precisa liberar manualmente
-  keys.push({
+  const entry = {
     id,
+    key: id,
     tier: selectedTier,
-    key,
     issuedAt: now,
     paused: true,
-    pausedAt: now
-  });
-  save(keys);
-  renderList();
+    pausedAt: now,
+    owner: currentUser.uid,
+    ownerEmail: currentUser.email || ''
+  };
 
-  showMsg(`${key}  (gerada pausada — clique em "liberar key")`, 'ok');
-  $uid.value = '';
+  try {
+    await db.ref('keys/' + id).set(entry);
+    showMsg(`${id}  (gerada pausada — admin precisa liberar)`, 'ok');
+    $uid.value = '';
+  } catch (err) {
+    showMsg('falha ao salvar: ' + err.message, 'err');
+  }
 });
-
 $uid.addEventListener('keydown', e => { if (e.key === 'Enter') $gen.click(); });
 
-// ações da lista
-$list.addEventListener('click', e => {
+$list.addEventListener('click', async e => {
   const btn = e.target.closest('button[data-act]');
-  if (!btn) return;
+  if (!btn || !isAdmin) return;
 
-  const ts = parseInt(btn.dataset.ts, 10);
-  const act = btn.dataset.act;
+  const keyId = btn.dataset.key;
+  const act   = btn.dataset.act;
+  const entry = keysCache[keyId];
+  if (!entry) return;
 
-  const keys = load();
-  const idx = keys.findIndex(k => k.issuedAt === ts);
-  if (idx === -1) return;
+  const ref = db.ref('keys/' + keyId);
 
-  if (act === 'pause') {
-    keys[idx].paused = true;
-    keys[idx].pausedAt = Date.now();
-  } else if (act === 'resume') {
-    // desloca issuedAt pelo tempo que ficou pausada — relógio continua de onde parou
-    const pausedMs = Date.now() - keys[idx].pausedAt;
-    keys[idx].issuedAt += pausedMs;
-    keys[idx].paused = false;
-    keys[idx].pausedAt = null;
-  } else if (act === 'del') {
-    const k = keys[idx];
-    if (!confirm(`excluir a key ${k.key}?\n\nisso não pode ser desfeito.`)) return;
-    keys.splice(idx, 1);
+  try {
+    if (act === 'pause') {
+      await ref.update({ paused: true, pausedAt: Date.now() });
+    } else if (act === 'resume') {
+      const pausedMs = Date.now() - (entry.pausedAt || entry.issuedAt);
+      await ref.update({
+        paused: false,
+        pausedAt: null,
+        issuedAt: entry.issuedAt + pausedMs
+      });
+    } else if (act === 'del') {
+      if (!confirm(`excluir a key ${keyId}?\n\nisso não pode ser desfeito.`)) return;
+      await ref.remove();
+    }
+  } catch (err) {
+    showMsg('erro: ' + err.message, 'err');
   }
-
-  save(keys);
-  renderList();
 });
 
 $copy.addEventListener('click', () => {
@@ -600,15 +513,6 @@ $copy.addEventListener('click', () => {
   $copy.textContent = 'copiado';
   setTimeout(() => $copy.textContent = 'copiar', 1200);
 });
-
-migrate();
-
-if (sessionStorage.getItem(AUTH) === '1') {
-  enterApp();
-} else {
-  enterLogin();
-}
-renderList();
 </script>
 </body>
 </html>
