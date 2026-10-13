@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KeyGen</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0f;
+    --panel: #12121a;
+    --border: #1f1f2e;
+    --accent: #5865f2;
+    --accent-hover: #4752c4;
+    --text: #e6e6f0;
+    --muted: #6b6b85;
+    --ok: #3ba55d;
+    --err: #ed4245;
+    --warn: #faa81a;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(88,101,242,0.08), transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(88,101,242,0.05), transparent 40%);
+  }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px;
+    width: 100%;
+    max-width: 560px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .logo-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+  }
+
+  h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; }
+
+  .sub { color: var(--muted); font-size: 13px; margin-bottom: 32px; }
+
+  label {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  input {
+    width: 100%;
+    background: #0a0a0f;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    color: var(--text);
+    font-size: 15px;
+    font-family: 'Consolas', monospace;
+    outline: none;
+    transition: border-color 0.15s;
+    margin-bottom: 16px;
+  }
+
+  input:focus { border-color: var(--accent); }
+
+  button {
+    width: 100%;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: background 0.15s, transform 0.05s;
+  }
+
+  button:hover { background: var(--accent-hover); }
+  button:active { transform: scale(0.99); }
+
+  .out {
+    margin-top: 20px;
+    background: #0a0a0f;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    font-family: 'Consolas', monospace;
+    font-size: 13px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .out.show { display: flex; }
+  .out.ok { border-color: var(--ok); }
+  .out.err { border-color: var(--err); }
+
+  .out-text { word-break: break-all; }
+  .out.ok .out-text { color: var(--ok); }
+  .out.err .out-text { color: var(--err); }
+
+  .copy {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    width: auto;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .copy:hover { border-color: var(--accent); color: var(--text); }
+
+  .list {
+    margin-top: 28px;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+  }
+
+  .list h2 {
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+
+  .item {
+    padding: 10px 0;
+    font-family: 'Consolas', monospace;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .item:last-child { border-bottom: none; }
+
+  .item .row1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .item .row2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .item .key-val { word-break: break-all; }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border: 1px solid currentColor;
+  }
+
+  .badge.d1  { color: #6bb5ff; }
+  .badge.d7  { color: #9b8bff; }
+  .badge.d30 { color: #ff9b6b; }
+  .badge.life { color: var(--ok); }
+
+  .badge.expired { color: var(--err); }
+
+  .empty { color: var(--muted); font-size: 13px; font-style: italic; }
+
+  .hidden { display: none !important; }
+
+  .logout {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    width: auto;
+    margin: 0;
+    float: right;
+  }
+
+  .logout:hover { border-color: var(--err); color: var(--err); background: transparent; }
+
+  /* tiers */
+  .tiers {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .tier {
+    background: #0a0a0f;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    user-select: none;
+  }
+
+  .tier:hover { border-color: var(--accent); }
+
+  .tier.active {
+    border-color: var(--accent);
+    background: rgba(88,101,242,0.12);
+  }
+
+  .tier .t-label {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .tier .t-desc {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .tier.active .t-label { color: var(--accent); }
+
+  .stats {
+    display: flex;
+    gap: 16px;
+    margin-top: 12px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+  <!-- LOGIN -->
+  <div class="card" id="loginCard">
+    <div class="logo">
+      <div class="logo-dot"></div>
+      <h1>KeyGen</h1>
+    </div>
+    <p class="sub">faça login pra continuar</p>
+
+    <label for="user">usuário</label>
+    <input id="user" type="text" placeholder="usuário" autocomplete="off" spellcheck="false">
+
+    <label for="pass">senha</label>
+    <input id="pass" type="password" placeholder="senha" autocomplete="off">
+
+    <button id="loginBtn">entrar</button>
+
+    <div class="out" id="loginOut">
+      <div class="out-text" id="loginOutText"></div>
+    </div>
+  </div>
+
+  <!-- APP -->
+  <div class="card hidden" id="appCard">
+    <div class="logo">
+      <div class="logo-dot"></div>
+      <h1>KeyGen</h1>
+    </div>
+    <p class="sub" style="margin-bottom:16px">gere uma key a partir do id do discord</p>
+    <button class="logout" id="logout">sair</button>
+    <div style="clear:both; margin-bottom:24px"></div>
+
+    <label>validade</label>
+    <div class="tiers" id="tiers">
+      <div class="tier active" data-tier="1">
+        <div class="t-label">1 dia</div>
+        <div class="t-desc">24h</div>
+      </div>
+      <div class="tier" data-tier="7">
+        <div class="t-label">7 dias</div>
+        <div class="t-desc">1 semana</div>
+      </div>
+      <div class="tier" data-tier="30">
+        <div class="t-label">30 dias</div>
+        <div class="t-desc">1 mês</div>
+      </div>
+      <div class="tier" data-tier="life">
+        <div class="t-label">lifetime</div>
+        <div class="t-desc">permanente</div>
+      </div>
+    </div>
+
+    <label for="uid">discord user id</label>
+    <input id="uid" type="text" placeholder="ex: 123456789012345678" autocomplete="off" spellcheck="false">
+
+    <button id="gen">gerar key</button>
+
+    <div class="out" id="out">
+      <div class="out-text" id="outText"></div>
+      <button class="copy" id="copy" style="display:none">copiar</button>
+    </div>
+
+    <div class="list">
+      <div class="row1" style="display:flex; justify-content:space-between; align-items:center;">
+        <h2 style="border:none; padding:0;">keys geradas</h2>
+      </div>
+      <div class="stats" id="stats"></div>
+      <div id="list" style="margin-top:12px;"><div class="empty">nenhuma ainda</div></div>
+    </div>
+  </div>
+
+<script>
+const STORE = 'keygen_keys';
+const AUTH  = 'keygen_auth';
+
+const USER = 'Rnzzk';
+const PASS = 'Rnzzk123';
+
+const DAY = 24 * 60 * 60 * 1000;
+
+const TIER_LABEL = {
+  '1':    { label: '1 dia',    badge: 'd1' },
+  '7':    { label: '7 dias',   badge: 'd7' },
+  '30':   { label: '30 dias',  badge: 'd30' },
+  'life': { label: 'lifetime', badge: 'life' }
+};
+
+const $loginCard = document.getElementById('loginCard');
+const $appCard   = document.getElementById('appCard');
+const $user      = document.getElementById('user');
+const $pass      = document.getElementById('pass');
+const $loginBtn  = document.getElementById('loginBtn');
+const $loginOut  = document.getElementById('loginOut');
+const $loginOutT = document.getElementById('loginOutText');
+const $logout    = document.getElementById('logout');
+const $tiers     = document.getElementById('tiers');
+const $uid       = document.getElementById('uid');
+const $gen       = document.getElementById('gen');
+const $out       = document.getElementById('out');
+const $outT      = document.getElementById('outText');
+const $copy      = document.getElementById('copy');
+const $list      = document.getElementById('list');
+const $stats     = document.getElementById('stats');
+
+let selectedTier = '1';
+
+function load() {
+  try { return JSON.parse(localStorage.getItem(STORE)) || []; }
+  catch { return []; }
+}
+
+function save(keys) {
+  localStorage.setItem(STORE, JSON.stringify(keys));
+}
+
+// key = hash do id + tier + janela de tempo
+function makeKey(id, tier, issuedAt) {
+  const seed = `${id}:${tier}:${issuedAt}`;
+  let h1 = 0x811c9dc5, h2 = 0x1000193;
+  for (let i = 0; i < seed.length; i++) {
+    const c = seed.charCodeAt(i);
+    h1 = ((h1 ^ c) * 0x01000193) >>> 0;
+    h2 = ((h2 + c * (i + 1)) * 0x85ebca6b) >>> 0;
+  }
+  const a = h1.toString(16).padStart(8, '0');
+  const b = h2.toString(16).padStart(8, '0');
+  const c = ((h1 ^ h2) >>> 0).toString(16).padStart(8, '0');
+  const t = tier === 'life' ? 'LFT' : tier.padStart(2, '0') + 'D';
+  return `${t}-${a}-${b}-${c}`.toUpperCase();
+}
+
+function expiresAt(entry) {
+  if (entry.tier === 'life') return Infinity;
+  return entry.issuedAt + parseInt(entry.tier, 10) * DAY;
+}
+
+function isExpired(entry) {
+  return Date.now() > expiresAt(entry);
+}
+
+function fmtRemaining(entry) {
+  if (entry.tier === 'life') return 'permanente';
+  const ms = expiresAt(entry) - Date.now();
+  if (ms <= 0) return 'expirada';
+  const d = Math.floor(ms / DAY);
+  const h = Math.floor((ms % DAY) / (60 * 60 * 1000));
+  const m = Math.floor((ms % (60 * 60 * 1000)) / (60 * 1000));
+  if (d > 0) return `${d}d ${h}h restantes`;
+  if (h > 0) return `${h}h ${m}m restantes`;
+  return `${m}m restantes`;
+}
+
+function fmtDate(ts) {
+  const d = new Date(ts);
+  const pad = n => String(n).padStart(2, '0');
+  return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function showLoginMsg(text, kind) {
+  $loginOut.className = 'out show ' + kind;
+  $loginOutT.textContent = text;
+}
+
+function hideLoginMsg() {
+  $loginOut.className = 'out';
+}
+
+function showMsg(text, kind) {
+  $out.className = 'out show ' + kind;
+  $outT.textContent = text;
+  $copy.style.display = kind === 'ok' ? 'block' : 'none';
+}
+
+function renderList() {
+  const keys = load();
+  const now = Date.now();
+
+  const active  = keys.filter(k => !isExpired(k)).length;
+  const expired = keys.length - active;
+  const lives   = keys.filter(k => k.tier === 'life').length;
+
+  $stats.innerHTML =
+    `<span>total: ${keys.length}</span>` +
+    `<span>ativas: ${active}</span>` +
+    `<span>expiradas: ${expired}</span>` +
+    `<span>lifetime: ${lives}</span>`;
+
+  if (!keys.length) {
+    $list.innerHTML = '<div class="empty">nenhuma ainda</div>';
+    return;
+  }
+
+  $list.innerHTML = keys.slice().reverse().map(k => {
+    const meta = TIER_LABEL[k.tier] || TIER_LABEL['1'];
+    const exp  = isExpired(k);
+    const badgeCls = exp ? 'expired' : meta.badge;
+    const badgeTxt = exp ? 'expirada' : meta.label;
+    return `
+      <div class="item">
+        <div class="row1">
+          <div class="key-val">${k.key}</div>
+          <span class="badge ${badgeCls}">${badgeTxt}</span>
+        </div>
+        <div class="row2">
+          <span>id: ${k.id}</span>
+          <span>${fmtRemaining(k)}</span>
+        </div>
+        <div class="row2">
+          <span>emitida: ${fmtDate(k.issuedAt)}</span>
+          <span>${k.tier === 'life' ? 'sem expiração' : 'expira: ' + fmtDate(expiresAt(k))}</span>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function enterApp() {
+  $loginCard.classList.add('hidden');
+  $appCard.classList.remove('hidden');
+  renderList();
+  $uid.focus();
+}
+
+function enterLogin() {
+  $appCard.classList.add('hidden');
+  $loginCard.classList.remove('hidden');
+  $user.value = '';
+  $pass.value = '';
+  hideLoginMsg();
+  $user.focus();
+}
+
+// login
+$loginBtn.addEventListener('click', () => {
+  const u = $user.value.trim();
+  const p = $pass.value;
+
+  if (!u || !p) { showLoginMsg('preencha usuário e senha', 'err'); return; }
+
+  if (u === USER && p === PASS) {
+    sessionStorage.setItem(AUTH, '1');
+    enterApp();
+  } else {
+    showLoginMsg('usuário ou senha incorretos', 'err');
+  }
+});
+
+$pass.addEventListener('keydown', e => { if (e.key === 'Enter') $loginBtn.click(); });
+$user.addEventListener('keydown', e => { if (e.key === 'Enter') $pass.focus(); });
+
+$logout.addEventListener('click', () => {
+  sessionStorage.removeItem(AUTH);
+  enterLogin();
+});
+
+// tier selector
+$tiers.addEventListener('click', e => {
+  const t = e.target.closest('.tier');
+  if (!t) return;
+  selectedTier = t.dataset.tier;
+  $tiers.querySelectorAll('.tier').forEach(el =>
+    el.classList.toggle('active', el === t)
+  );
+});
+
+// gerar
+$gen.addEventListener('click', () => {
+  const id = $uid.value.trim();
+
+  if (!/^\d{17,20}$/.test(id)) {
+    showMsg('id inválido (17–20 dígitos numéricos)', 'err');
+    return;
+  }
+
+  const keys = load();
+  const existingActive = keys.find(k =>
+    k.id === id && k.tier === selectedTier && !isExpired(k)
+  );
+  if (existingActive) {
+    showMsg('já existe key ativa desse tier pra esse id', 'err');
+    return;
+  }
+
+  const issuedAt = Date.now();
+  const key = makeKey(id, selectedTier, issuedAt);
+  keys.push({ id, tier: selectedTier, key, issuedAt });
+  save(keys);
+  renderList();
+
+  const meta = TIER_LABEL[selectedTier];
+  const msg = selectedTier === 'life'
+    ? `${key}  (lifetime)`
+    : `${key}  (expira em ${parseInt(selectedTier,10)}d)`;
+  showMsg(msg, 'ok');
+  $uid.value = '';
+});
+
+$uid.addEventListener('keydown', e => { if (e.key === 'Enter') $gen.click(); });
+
+$copy.addEventListener('click', () => {
+  navigator.clipboard.writeText($outT.textContent.split('  ')[0]);
+  $copy.textContent = 'copiado';
+  setTimeout(() => $copy.textContent = 'copiar', 1200);
+});
+
+if (sessionStorage.getItem(AUTH) === '1') {
+  enterApp();
+} else {
+  enterLogin();
+}
+renderList();
+</script>
+</body>
+</html>
