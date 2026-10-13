@@ -40,23 +40,15 @@
     border-radius: 16px;
     padding: 40px;
     width: 100%;
-    max-width: 620px;
+    max-width: 640px;
     box-shadow: 0 20px 60px rgba(0,0,0,0.5);
   }
 
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 8px;
-  }
+  .logo { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
 
   .logo-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 12px var(--accent);
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--accent); box-shadow: 0 0 12px var(--accent);
   }
 
   h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; }
@@ -64,41 +56,23 @@
   .sub { color: var(--muted); font-size: 13px; margin-bottom: 32px; }
 
   label {
-    display: block;
-    font-size: 12px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 8px;
+    display: block; font-size: 12px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;
   }
 
   input {
-    width: 100%;
-    background: #0a0a0f;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 16px;
-    color: var(--text);
-    font-size: 15px;
-    font-family: 'Consolas', monospace;
-    outline: none;
-    transition: border-color 0.15s;
-    margin-bottom: 16px;
+    width: 100%; background: #0a0a0f; border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 16px; color: var(--text);
+    font-size: 15px; font-family: 'Consolas', monospace;
+    outline: none; transition: border-color 0.15s; margin-bottom: 16px;
   }
 
   input:focus { border-color: var(--accent); }
 
   button {
-    width: 100%;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    padding: 14px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 4px;
+    width: 100%; background: var(--accent); color: #fff; border: none;
+    border-radius: 10px; padding: 14px; font-size: 15px; font-weight: 600;
+    cursor: pointer; margin-top: 4px;
     transition: background 0.15s, transform 0.05s;
   }
 
@@ -106,17 +80,10 @@
   button:active { transform: scale(0.99); }
 
   .out {
-    margin-top: 20px;
-    background: #0a0a0f;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px;
-    font-family: 'Consolas', monospace;
-    font-size: 13px;
-    display: none;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
+    margin-top: 20px; background: #0a0a0f; border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px; font-family: 'Consolas', monospace;
+    font-size: 13px; display: none; align-items: center;
+    justify-content: space-between; gap: 12px;
   }
 
   .out.show { display: flex; }
@@ -128,106 +95,72 @@
   .out.err .out-text { color: var(--err); }
 
   .copy {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 11px;
-    cursor: pointer;
-    width: auto;
-    margin: 0;
-    white-space: nowrap;
+    background: transparent; border: 1px solid var(--border);
+    color: var(--muted); padding: 6px 12px; border-radius: 6px;
+    font-size: 11px; cursor: pointer; width: auto; margin: 0; white-space: nowrap;
   }
 
   .copy:hover { border-color: var(--accent); color: var(--text); }
 
-  .list {
-    margin-top: 28px;
-    border-top: 1px solid var(--border);
-    padding-top: 20px;
-  }
+  .list { margin-top: 28px; border-top: 1px solid var(--border); padding-top: 20px; }
 
   .list h2 {
-    font-size: 12px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 12px;
+    font-size: 12px; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.5px; margin-bottom: 12px;
   }
 
   .item {
-    padding: 12px 0;
-    font-family: 'Consolas', monospace;
-    font-size: 13px;
-    border-bottom: 1px solid var(--border);
+    padding: 14px 0; font-family: 'Consolas', monospace;
+    font-size: 13px; border-bottom: 1px solid var(--border);
   }
 
   .item:last-child { border-bottom: none; }
 
-  .item.paused { opacity: 0.65; }
+  .item.paused { opacity: 0.7; }
 
   .item .row1 {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
+    display: flex; justify-content: space-between;
+    align-items: center; gap: 8px;
   }
 
   .item .row2 {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
-    margin-top: 4px;
-    font-size: 11px;
-    color: var(--muted);
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 8px; margin-top: 4px; font-size: 11px; color: var(--muted);
   }
 
-  .item .key-val { word-break: break-all; }
+  .item .key-val { word-break: break-all; font-size: 13px; }
 
   .item .actions {
-    display: flex;
-    gap: 6px;
-    margin-top: 10px;
-    justify-content: flex-end;
+    display: flex; gap: 8px; margin-top: 12px;
   }
 
   .btn-sm {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    padding: 5px 12px;
-    border-radius: 6px;
-    font-size: 11px;
-    font-weight: 500;
-    cursor: pointer;
-    width: auto;
-    margin: 0;
-    transition: border-color 0.15s, color 0.15s;
+    border-radius: 8px; padding: 8px 14px; font-size: 12px;
+    font-weight: 600; cursor: pointer; width: auto; margin: 0;
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text); transition: all 0.15s;
   }
 
-  .btn-sm:hover { border-color: var(--accent); color: var(--text); }
-  .btn-sm.pause:hover { border-color: var(--warn); color: var(--warn); }
-  .btn-sm.resume:hover { border-color: var(--ok); color: var(--ok); }
-  .btn-sm.del:hover { border-color: var(--err); color: var(--err); }
+  .btn-sm.pause  { border-color: var(--warn); color: var(--warn); }
+  .btn-sm.pause:hover  { background: rgba(250,168,26,0.12); }
+
+  .btn-sm.resume { border-color: var(--ok); color: var(--ok); }
+  .btn-sm.resume:hover { background: rgba(59,165,93,0.12); }
+
+  .btn-sm.del    { border-color: var(--err); color: var(--err); }
+  .btn-sm.del:hover    { background: rgba(237,66,69,0.12); }
 
   .badge {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 999px;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    border: 1px solid currentColor;
+    display: inline-block; padding: 2px 8px; border-radius: 999px;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.5px;
+    text-transform: uppercase; border: 1px solid currentColor;
+    white-space: nowrap;
   }
 
   .badge.d1  { color: #6bb5ff; }
   .badge.d7  { color: #9b8bff; }
   .badge.d30 { color: #ff9b6b; }
   .badge.life { color: var(--ok); }
-
   .badge.expired { color: var(--err); }
   .badge.paused  { color: var(--warn); }
 
@@ -236,36 +169,23 @@
   .hidden { display: none !important; }
 
   .logout {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    padding: 8px 14px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    width: auto;
-    margin: 0;
-    float: right;
+    background: transparent; border: 1px solid var(--border);
+    color: var(--muted); padding: 8px 14px; border-radius: 8px;
+    font-size: 12px; font-weight: 500; cursor: pointer;
+    width: auto; margin: 0; float: right;
   }
 
   .logout:hover { border-color: var(--err); color: var(--err); background: transparent; }
 
   .tiers {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    margin-bottom: 20px;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 8px; margin-bottom: 20px;
   }
 
   .tier {
-    background: #0a0a0f;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 8px;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color 0.15s, background 0.15s;
+    background: #0a0a0f; border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 8px; text-align: center;
+    cursor: pointer; transition: border-color 0.15s, background 0.15s;
     user-select: none;
   }
 
@@ -276,31 +196,22 @@
     background: rgba(88,101,242,0.12);
   }
 
-  .tier .t-label {
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 4px;
-  }
+  .tier .t-label { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
 
   .tier .t-desc {
-    font-size: 10px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-size: 10px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.5px;
   }
 
   .tier.active .t-label { color: var(--accent); }
 
   .stats {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    margin-top: 12px;
-    font-size: 11px;
-    color: var(--muted);
+    display: flex; gap: 16px; flex-wrap: wrap;
+    margin-top: 12px; font-size: 11px; color: var(--muted);
   }
 
   .stats .s-paused { color: var(--warn); }
+  .stats .s-active { color: var(--ok); }
 </style>
 </head>
 <body>
@@ -373,7 +284,7 @@
 <script>
 const STORE = 'keygen_keys';
 const AUTH  = 'keygen_auth';
-const SCHEMA_VERSION = 3;
+const SCHEMA_VERSION = 4;
 
 const USER = 'Rnzzk';
 const PASS = 'Rnzzk123';
@@ -407,9 +318,8 @@ const $stats     = document.getElementById('stats');
 let selectedTier = '1';
 
 // --- migração de schema -----------------------------------------------
-// v1 = keys em formato hash "01D-XXXXXXXX-XXXXXXXX-XXXXXXXX"
-// v2 = key = id do discord
-// v3 = adiciona campos paused/pausedAt (nada a converter, só preserva)
+// v4: key nasce pausada (pending), e todas antigas são marcadas pausadas
+//     pra forçar liberação manual.
 function migrate() {
   const current = parseInt(localStorage.getItem(STORE + '_v') || '1', 10);
   if (current >= SCHEMA_VERSION) return;
@@ -423,8 +333,8 @@ function migrate() {
         tier: k.tier,
         key: k.key,
         issuedAt: k.issuedAt,
-        paused: !!k.paused,
-        pausedAt: k.pausedAt || null
+        paused: true,
+        pausedAt: k.pausedAt || k.issuedAt
       }));
     localStorage.setItem(STORE, JSON.stringify(kept));
   } catch {
@@ -444,24 +354,19 @@ function save(keys) {
   localStorage.setItem(STORE, JSON.stringify(keys));
 }
 
-// tempo efetivo "andado" pela key, respeitando pausas
-function elapsedOf(entry) {
-  if (!entry.paused) return Date.now() - entry.issuedAt;
-  return entry.pausedAt - entry.issuedAt;
-}
-
 function expiresAt(entry) {
   if (entry.tier === 'life') return Infinity;
   const dur = parseInt(entry.tier, 10) * DAY;
-  // tempo restante congelado enquanto pausada
   if (entry.paused) {
-    return entry.pausedAt + (dur - (entry.pausedAt - entry.issuedAt));
+    const used = entry.pausedAt - entry.issuedAt;
+    const left = dur - used;
+    return entry.pausedAt + left;
   }
   return entry.issuedAt + dur;
 }
 
 function isExpired(entry) {
-  if (entry.paused) return false; // pausada nunca expira
+  if (entry.paused) return false;
   return Date.now() > expiresAt(entry);
 }
 
@@ -470,10 +375,13 @@ function isPaused(entry) {
 }
 
 function fmtRemaining(entry) {
-  if (entry.tier === 'life') return 'permanente';
+  if (entry.tier === 'life') {
+    return entry.paused ? 'pausada · permanente' : 'permanente';
+  }
   if (entry.paused) {
     const dur = parseInt(entry.tier, 10) * DAY;
-    const left = dur - (entry.pausedAt - entry.issuedAt);
+    const used = entry.pausedAt - entry.issuedAt;
+    const left = dur - used;
     const d = Math.floor(left / DAY);
     const h = Math.floor((left % DAY) / (60 * 60 * 1000));
     const m = Math.floor((left % (60 * 60 * 1000)) / (60 * 1000));
@@ -503,9 +411,7 @@ function showLoginMsg(text, kind) {
   $loginOutT.textContent = text;
 }
 
-function hideLoginMsg() {
-  $loginOut.className = 'out';
-}
+function hideLoginMsg() { $loginOut.className = 'out'; }
 
 function showMsg(text, kind) {
   $out.className = 'out show ' + kind;
@@ -516,14 +422,14 @@ function showMsg(text, kind) {
 function renderList() {
   const keys = load();
 
-  const active  = keys.filter(k => !isExpired(k) && !isPaused(k)).length;
+  const active  = keys.filter(k => !isPaused(k) && !isExpired(k)).length;
   const paused  = keys.filter(k => isPaused(k)).length;
   const expired = keys.filter(k => !isPaused(k) && isExpired(k)).length;
   const lives   = keys.filter(k => k.tier === 'life').length;
 
   $stats.innerHTML =
     `<span>total: ${keys.length}</span>` +
-    `<span>ativas: ${active}</span>` +
+    `<span class="s-active">liberadas: ${active}</span>` +
     `<span class="s-paused">pausadas: ${paused}</span>` +
     `<span>expiradas: ${expired}</span>` +
     `<span>lifetime: ${lives}</span>`;
@@ -533,7 +439,10 @@ function renderList() {
     return;
   }
 
-  $list.innerHTML = keys.slice().reverse().map(k => {
+  // mais recente primeiro
+  const sorted = keys.slice().sort((a, b) => b.issuedAt - a.issuedAt);
+
+  $list.innerHTML = sorted.map(k => {
     const meta   = TIER_LABEL[k.tier] || TIER_LABEL['1'];
     const paused = isPaused(k);
     const exp    = !paused && isExpired(k);
@@ -547,8 +456,12 @@ function renderList() {
       ? 'sem expiração'
       : 'expira: ' + fmtDate(expiresAt(k));
 
+    const actionBtn = paused
+      ? `<button class="btn-sm resume" data-act="resume" data-ts="${k.issuedAt}">liberar key</button>`
+      : `<button class="btn-sm pause"  data-act="pause"  data-ts="${k.issuedAt}">pausar key</button>`;
+
     return `
-      <div class="item ${paused ? 'paused' : ''}" data-ts="${k.issuedAt}">
+      <div class="item ${paused ? 'paused' : ''}">
         <div class="row1">
           <div class="key-val">${k.key}</div>
           <span class="badge ${badgeCls}">${badgeTxt}</span>
@@ -562,9 +475,7 @@ function renderList() {
           <span>${expLine}</span>
         </div>
         <div class="actions">
-          <button class="btn-sm ${paused ? 'resume' : 'pause'}" data-act="${paused ? 'resume' : 'pause'}" data-ts="${k.issuedAt}">
-            ${paused ? 'retomar' : 'pausar'}
-          </button>
+          ${actionBtn}
           <button class="btn-sm del" data-act="del" data-ts="${k.issuedAt}">excluir</button>
         </div>
       </div>`;
@@ -627,30 +538,33 @@ $gen.addEventListener('click', () => {
   }
 
   const keys = load();
-  const existingActive = keys.find(k =>
-    k.id === id && k.tier === selectedTier && !isExpired(k) && !isPaused(k)
-  );
-  if (existingActive) {
-    showMsg('já existe key ativa desse tier pra esse id', 'err');
+  const existing = keys.find(k => k.id === id && k.tier === selectedTier);
+  if (existing) {
+    showMsg('já existe key desse tier pra esse id', 'err');
     return;
   }
 
-  const issuedAt = Date.now();
+  const now = Date.now();
   const key = id;
-  keys.push({ id, tier: selectedTier, key, issuedAt, paused: false, pausedAt: null });
+  // nasce pausada — precisa liberar manualmente
+  keys.push({
+    id,
+    tier: selectedTier,
+    key,
+    issuedAt: now,
+    paused: true,
+    pausedAt: now
+  });
   save(keys);
   renderList();
 
-  const msg = selectedTier === 'life'
-    ? `${key}  (lifetime)`
-    : `${key}  (expira em ${parseInt(selectedTier,10)}d)`;
-  showMsg(msg, 'ok');
+  showMsg(`${key}  (gerada pausada — clique em "liberar key")`, 'ok');
   $uid.value = '';
 });
 
 $uid.addEventListener('keydown', e => { if (e.key === 'Enter') $gen.click(); });
 
-// ações da lista (pausar / retomar / excluir)
+// ações da lista
 $list.addEventListener('click', e => {
   const btn = e.target.closest('button[data-act]');
   if (!btn) return;
@@ -658,7 +572,7 @@ $list.addEventListener('click', e => {
   const ts = parseInt(btn.dataset.ts, 10);
   const act = btn.dataset.act;
 
-  let keys = load();
+  const keys = load();
   const idx = keys.findIndex(k => k.issuedAt === ts);
   if (idx === -1) return;
 
@@ -666,16 +580,14 @@ $list.addEventListener('click', e => {
     keys[idx].paused = true;
     keys[idx].pausedAt = Date.now();
   } else if (act === 'resume') {
-    // desloca issuedAt pra frente pelo tempo que ficou pausada,
-    // assim o relógio continua de onde parou
+    // desloca issuedAt pelo tempo que ficou pausada — relógio continua de onde parou
     const pausedMs = Date.now() - keys[idx].pausedAt;
     keys[idx].issuedAt += pausedMs;
     keys[idx].paused = false;
     keys[idx].pausedAt = null;
   } else if (act === 'del') {
     const k = keys[idx];
-    const ok = confirm(`excluir a key ${k.key}?\n\nisso não pode ser desfeito.`);
-    if (!ok) return;
+    if (!confirm(`excluir a key ${k.key}?\n\nisso não pode ser desfeito.`)) return;
     keys.splice(idx, 1);
   }
 
