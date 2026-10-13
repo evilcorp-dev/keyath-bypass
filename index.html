@@ -40,7 +40,7 @@
     border-radius: 16px;
     padding: 40px;
     width: 100%;
-    max-width: 560px;
+    max-width: 620px;
     box-shadow: 0 20px 60px rgba(0,0,0,0.5);
   }
 
@@ -157,13 +157,15 @@
   }
 
   .item {
-    padding: 10px 0;
+    padding: 12px 0;
     font-family: 'Consolas', monospace;
     font-size: 13px;
     border-bottom: 1px solid var(--border);
   }
 
   .item:last-child { border-bottom: none; }
+
+  .item.paused { opacity: 0.65; }
 
   .item .row1 {
     display: flex;
@@ -184,6 +186,32 @@
 
   .item .key-val { word-break: break-all; }
 
+  .item .actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+    justify-content: flex-end;
+  }
+
+  .btn-sm {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    width: auto;
+    margin: 0;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  .btn-sm:hover { border-color: var(--accent); color: var(--text); }
+  .btn-sm.pause:hover { border-color: var(--warn); color: var(--warn); }
+  .btn-sm.resume:hover { border-color: var(--ok); color: var(--ok); }
+  .btn-sm.del:hover { border-color: var(--err); color: var(--err); }
+
   .badge {
     display: inline-block;
     padding: 2px 8px;
@@ -201,6 +229,7 @@
   .badge.life { color: var(--ok); }
 
   .badge.expired { color: var(--err); }
+  .badge.paused  { color: var(--warn); }
 
   .empty { color: var(--muted); font-size: 13px; font-style: italic; }
 
@@ -265,10 +294,13 @@
   .stats {
     display: flex;
     gap: 16px;
+    flex-wrap: wrap;
     margin-top: 12px;
     font-size: 11px;
     color: var(--muted);
   }
+
+  .stats .s-paused { color: var(--warn); }
 </style>
 </head>
 <body>
@@ -341,7 +373,7 @@
 <script>
 const STORE = 'keygen_keys';
 const AUTH  = 'keygen_auth';
-const SCHEMA_VERSION = 2;
+const SCHEMA_VERSION = 3;
 
 const USER = 'Rnzzk';
 const PASS = 'Rnzzk123';
@@ -376,17 +408,24 @@ let selectedTier = '1';
 
 // --- migração de schema -----------------------------------------------
 // v1 = keys em formato hash "01D-XXXXXXXX-XXXXXXXX-XXXXXXXX"
-// v2 = key = id do discord (só dígitos)
-// ao subir pra v2, qualquer key que não seja só dígitos é descartada.
+// v2 = key = id do discord
+// v3 = adiciona campos paused/pausedAt (nada a converter, só preserva)
 function migrate() {
   const current = parseInt(localStorage.getItem(STORE + '_v') || '1', 10);
   if (current >= SCHEMA_VERSION) return;
 
   try {
     const raw = JSON.parse(localStorage.getItem(STORE)) || [];
-    const kept = raw.filter(k =>
-      k && typeof k.key === 'string' && /^\d{17,20}$/.test(k.key)
-    );
+    const kept = raw
+      .filter(k => k && typeof k.key === 'string' && /^\d{17,20}$/.test(k.key))
+      .map(k => ({
+        id: k.id,
+        tier: k.tier,
+        key: k.key,
+        issuedAt: k.issuedAt,
+        paused: !!k.paused,
+        pausedAt: k.pausedAt || null
+      }));
     localStorage.setItem(STORE, JSON.stringify(kept));
   } catch {
     localStorage.removeItem(STORE);
@@ -405,17 +444,43 @@ function save(keys) {
   localStorage.setItem(STORE, JSON.stringify(keys));
 }
 
+// tempo efetivo "andado" pela key, respeitando pausas
+function elapsedOf(entry) {
+  if (!entry.paused) return Date.now() - entry.issuedAt;
+  return entry.pausedAt - entry.issuedAt;
+}
+
 function expiresAt(entry) {
   if (entry.tier === 'life') return Infinity;
-  return entry.issuedAt + parseInt(entry.tier, 10) * DAY;
+  const dur = parseInt(entry.tier, 10) * DAY;
+  // tempo restante congelado enquanto pausada
+  if (entry.paused) {
+    return entry.pausedAt + (dur - (entry.pausedAt - entry.issuedAt));
+  }
+  return entry.issuedAt + dur;
 }
 
 function isExpired(entry) {
+  if (entry.paused) return false; // pausada nunca expira
   return Date.now() > expiresAt(entry);
+}
+
+function isPaused(entry) {
+  return !!entry.paused;
 }
 
 function fmtRemaining(entry) {
   if (entry.tier === 'life') return 'permanente';
+  if (entry.paused) {
+    const dur = parseInt(entry.tier, 10) * DAY;
+    const left = dur - (entry.pausedAt - entry.issuedAt);
+    const d = Math.floor(left / DAY);
+    const h = Math.floor((left % DAY) / (60 * 60 * 1000));
+    const m = Math.floor((left % (60 * 60 * 1000)) / (60 * 1000));
+    if (d > 0) return `pausada · ${d}d ${h}h restantes`;
+    if (h > 0) return `pausada · ${h}h ${m}m restantes`;
+    return `pausada · ${m}m restantes`;
+  }
   const ms = expiresAt(entry) - Date.now();
   if (ms <= 0) return 'expirada';
   const d = Math.floor(ms / DAY);
@@ -427,6 +492,7 @@ function fmtRemaining(entry) {
 }
 
 function fmtDate(ts) {
+  if (ts === Infinity) return '—';
   const d = new Date(ts);
   const pad = n => String(n).padStart(2, '0');
   return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
@@ -450,13 +516,15 @@ function showMsg(text, kind) {
 function renderList() {
   const keys = load();
 
-  const active  = keys.filter(k => !isExpired(k)).length;
-  const expired = keys.length - active;
+  const active  = keys.filter(k => !isExpired(k) && !isPaused(k)).length;
+  const paused  = keys.filter(k => isPaused(k)).length;
+  const expired = keys.filter(k => !isPaused(k) && isExpired(k)).length;
   const lives   = keys.filter(k => k.tier === 'life').length;
 
   $stats.innerHTML =
     `<span>total: ${keys.length}</span>` +
     `<span>ativas: ${active}</span>` +
+    `<span class="s-paused">pausadas: ${paused}</span>` +
     `<span>expiradas: ${expired}</span>` +
     `<span>lifetime: ${lives}</span>`;
 
@@ -466,12 +534,21 @@ function renderList() {
   }
 
   $list.innerHTML = keys.slice().reverse().map(k => {
-    const meta = TIER_LABEL[k.tier] || TIER_LABEL['1'];
-    const exp  = isExpired(k);
-    const badgeCls = exp ? 'expired' : meta.badge;
-    const badgeTxt = exp ? 'expirada' : meta.label;
+    const meta   = TIER_LABEL[k.tier] || TIER_LABEL['1'];
+    const paused = isPaused(k);
+    const exp    = !paused && isExpired(k);
+
+    let badgeCls = meta.badge;
+    let badgeTxt = meta.label;
+    if (paused) { badgeCls = 'paused';  badgeTxt = 'pausada'; }
+    else if (exp) { badgeCls = 'expired'; badgeTxt = 'expirada'; }
+
+    const expLine = k.tier === 'life'
+      ? 'sem expiração'
+      : 'expira: ' + fmtDate(expiresAt(k));
+
     return `
-      <div class="item">
+      <div class="item ${paused ? 'paused' : ''}" data-ts="${k.issuedAt}">
         <div class="row1">
           <div class="key-val">${k.key}</div>
           <span class="badge ${badgeCls}">${badgeTxt}</span>
@@ -482,7 +559,13 @@ function renderList() {
         </div>
         <div class="row2">
           <span>emitida: ${fmtDate(k.issuedAt)}</span>
-          <span>${k.tier === 'life' ? 'sem expiração' : 'expira: ' + fmtDate(expiresAt(k))}</span>
+          <span>${expLine}</span>
+        </div>
+        <div class="actions">
+          <button class="btn-sm ${paused ? 'resume' : 'pause'}" data-act="${paused ? 'resume' : 'pause'}" data-ts="${k.issuedAt}">
+            ${paused ? 'retomar' : 'pausar'}
+          </button>
+          <button class="btn-sm del" data-act="del" data-ts="${k.issuedAt}">excluir</button>
         </div>
       </div>`;
   }).join('');
@@ -545,7 +628,7 @@ $gen.addEventListener('click', () => {
 
   const keys = load();
   const existingActive = keys.find(k =>
-    k.id === id && k.tier === selectedTier && !isExpired(k)
+    k.id === id && k.tier === selectedTier && !isExpired(k) && !isPaused(k)
   );
   if (existingActive) {
     showMsg('já existe key ativa desse tier pra esse id', 'err');
@@ -553,8 +636,8 @@ $gen.addEventListener('click', () => {
   }
 
   const issuedAt = Date.now();
-  const key = id; // key = id do discord
-  keys.push({ id, tier: selectedTier, key, issuedAt });
+  const key = id;
+  keys.push({ id, tier: selectedTier, key, issuedAt, paused: false, pausedAt: null });
   save(keys);
   renderList();
 
@@ -567,13 +650,45 @@ $gen.addEventListener('click', () => {
 
 $uid.addEventListener('keydown', e => { if (e.key === 'Enter') $gen.click(); });
 
+// ações da lista (pausar / retomar / excluir)
+$list.addEventListener('click', e => {
+  const btn = e.target.closest('button[data-act]');
+  if (!btn) return;
+
+  const ts = parseInt(btn.dataset.ts, 10);
+  const act = btn.dataset.act;
+
+  let keys = load();
+  const idx = keys.findIndex(k => k.issuedAt === ts);
+  if (idx === -1) return;
+
+  if (act === 'pause') {
+    keys[idx].paused = true;
+    keys[idx].pausedAt = Date.now();
+  } else if (act === 'resume') {
+    // desloca issuedAt pra frente pelo tempo que ficou pausada,
+    // assim o relógio continua de onde parou
+    const pausedMs = Date.now() - keys[idx].pausedAt;
+    keys[idx].issuedAt += pausedMs;
+    keys[idx].paused = false;
+    keys[idx].pausedAt = null;
+  } else if (act === 'del') {
+    const k = keys[idx];
+    const ok = confirm(`excluir a key ${k.key}?\n\nisso não pode ser desfeito.`);
+    if (!ok) return;
+    keys.splice(idx, 1);
+  }
+
+  save(keys);
+  renderList();
+});
+
 $copy.addEventListener('click', () => {
   navigator.clipboard.writeText($outT.textContent.split('  ')[0]);
   $copy.textContent = 'copiado';
   setTimeout(() => $copy.textContent = 'copiar', 1200);
 });
 
-// roda migração antes de qualquer render
 migrate();
 
 if (sessionStorage.getItem(AUTH) === '1') {
