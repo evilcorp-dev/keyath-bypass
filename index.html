@@ -222,7 +222,6 @@
 
   .logout:hover { border-color: var(--err); color: var(--err); background: transparent; }
 
-  /* tiers */
   .tiers {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -273,7 +272,6 @@
 </style>
 </head>
 <body>
-  <!-- LOGIN -->
   <div class="card" id="loginCard">
     <div class="logo">
       <div class="logo-dot"></div>
@@ -294,7 +292,6 @@
     </div>
   </div>
 
-  <!-- APP -->
   <div class="card hidden" id="appCard">
     <div class="logo">
       <div class="logo-dot"></div>
@@ -325,7 +322,7 @@
     </div>
 
     <label for="uid">discord user id</label>
-    <input id="uid" type="text" placeholder="ex: 123456789012345678" autocomplete="off" spellcheck="false">
+    <input id="uid" type="text" placeholder="ex: 1392646068868747305" autocomplete="off" spellcheck="false">
 
     <button id="gen">gerar key</button>
 
@@ -335,9 +332,7 @@
     </div>
 
     <div class="list">
-      <div class="row1" style="display:flex; justify-content:space-between; align-items:center;">
-        <h2 style="border:none; padding:0;">keys geradas</h2>
-      </div>
+      <h2>keys geradas</h2>
       <div class="stats" id="stats"></div>
       <div id="list" style="margin-top:12px;"><div class="empty">nenhuma ainda</div></div>
     </div>
@@ -387,22 +382,6 @@ function save(keys) {
   localStorage.setItem(STORE, JSON.stringify(keys));
 }
 
-// key = hash do id + tier + janela de tempo
-function makeKey(id, tier, issuedAt) {
-  const seed = `${id}:${tier}:${issuedAt}`;
-  let h1 = 0x811c9dc5, h2 = 0x1000193;
-  for (let i = 0; i < seed.length; i++) {
-    const c = seed.charCodeAt(i);
-    h1 = ((h1 ^ c) * 0x01000193) >>> 0;
-    h2 = ((h2 + c * (i + 1)) * 0x85ebca6b) >>> 0;
-  }
-  const a = h1.toString(16).padStart(8, '0');
-  const b = h2.toString(16).padStart(8, '0');
-  const c = ((h1 ^ h2) >>> 0).toString(16).padStart(8, '0');
-  const t = tier === 'life' ? 'LFT' : tier.padStart(2, '0') + 'D';
-  return `${t}-${a}-${b}-${c}`.toUpperCase();
-}
-
 function expiresAt(entry) {
   if (entry.tier === 'life') return Infinity;
   return entry.issuedAt + parseInt(entry.tier, 10) * DAY;
@@ -447,7 +426,6 @@ function showMsg(text, kind) {
 
 function renderList() {
   const keys = load();
-  const now = Date.now();
 
   const active  = keys.filter(k => !isExpired(k)).length;
   const expired = keys.length - active;
@@ -503,7 +481,6 @@ function enterLogin() {
   $user.focus();
 }
 
-// login
 $loginBtn.addEventListener('click', () => {
   const u = $user.value.trim();
   const p = $pass.value;
@@ -526,7 +503,6 @@ $logout.addEventListener('click', () => {
   enterLogin();
 });
 
-// tier selector
 $tiers.addEventListener('click', e => {
   const t = e.target.closest('.tier');
   if (!t) return;
@@ -536,7 +512,6 @@ $tiers.addEventListener('click', e => {
   );
 });
 
-// gerar
 $gen.addEventListener('click', () => {
   const id = $uid.value.trim();
 
@@ -555,12 +530,11 @@ $gen.addEventListener('click', () => {
   }
 
   const issuedAt = Date.now();
-  const key = makeKey(id, selectedTier, issuedAt);
+  const key = id; // key = id do discord
   keys.push({ id, tier: selectedTier, key, issuedAt });
   save(keys);
   renderList();
 
-  const meta = TIER_LABEL[selectedTier];
   const msg = selectedTier === 'life'
     ? `${key}  (lifetime)`
     : `${key}  (expira em ${parseInt(selectedTier,10)}d)`;
