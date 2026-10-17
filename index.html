@@ -3,200 +3,318 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KeyGen</title>
+<title>KEYAUTH</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
+
   :root {
-    --bg: #0a0a0f; --panel: #12121a; --border: #1f1f2e;
-    --accent: #5865f2; --accent-hover: #4752c4;
-    --text: #e6e6f0; --muted: #6b6b85;
-    --ok: #3ba55d; --err: #ed4245; --warn: #faa81a;
+    --bg: #0a0a0a;
+    --panel: #111;
+    --border: #222;
+    --accent: #00ff88;
+    --accent-dim: rgba(0, 255, 136, 0.1);
+    --text: #eee;
+    --muted: #666;
+    --err: #ff4444;
   }
+
   body {
-    background: var(--bg); color: var(--text);
+    background: var(--bg);
+    color: var(--text);
     font-family: 'Segoe UI', system-ui, sans-serif;
-    min-height: 100vh; display: flex; align-items: center;
-    justify-content: center; padding: 24px;
-    background-image:
-      radial-gradient(circle at 20% 20%, rgba(88,101,242,0.08), transparent 40%),
-      radial-gradient(circle at 80% 80%, rgba(88,101,242,0.05), transparent 40%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
   }
-  .card {
-    background: var(--panel); border: 1px solid var(--border);
-    border-radius: 16px; padding: 40px; width: 100%;
-    max-width: 640px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+
+  /* --- TELA DE LOGIN --- */
+  .login-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
   }
-  .logo { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
-  .logo-dot { width: 12px; height: 12px; border-radius: 50%;
-    background: var(--accent); box-shadow: 0 0 12px var(--accent); }
-  h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; }
-  .sub { color: var(--muted); font-size: 13px; margin-bottom: 32px; }
-  label { display: block; font-size: 12px; color: var(--muted);
-    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+
+  .login-card h1 {
+    font-size: 24px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+
+  .login-card p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 32px;
+  }
+
+  label {
+    display: block;
+    text-align: left;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
   input {
-    width: 100%; background: #0a0a0f; border: 1px solid var(--border);
-    border-radius: 10px; padding: 14px 16px; color: var(--text);
-    font-size: 15px; font-family: 'Consolas', monospace; outline: none;
-    transition: border-color 0.15s; margin-bottom: 16px;
+    width: 100%;
+    background: #050505;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-size: 14px;
+    outline: none;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
   }
+
   input:focus { border-color: var(--accent); }
+
   button {
-    width: 100%; background: var(--accent); color: #fff; border: none;
-    border-radius: 10px; padding: 14px; font-size: 15px; font-weight: 600;
-    cursor: pointer; margin-top: 4px; transition: background 0.15s;
+    width: 100%;
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
   }
-  button:hover { background: var(--accent-hover); }
-  button:disabled { opacity: 0.6; cursor: not-allowed; }
-  .out {
-    margin-top: 20px; background: #0a0a0f; border: 1px solid var(--border);
-    border-radius: 10px; padding: 16px; font-family: 'Consolas', monospace;
-    font-size: 13px; display: none; align-items: center;
-    justify-content: space-between; gap: 12px;
+
+  button:hover {
+    background: var(--accent-dim);
   }
-  .out.show { display: flex; }
-  .out.ok { border-color: var(--ok); }
-  .out.err { border-color: var(--err); }
-  .out-text { word-break: break-all; }
-  .out.ok .out-text { color: var(--ok); }
-  .out.err .out-text { color: var(--err); }
-  .copy { background: transparent; border: 1px solid var(--border);
-    color: var(--muted); padding: 6px 12px; border-radius: 6px;
-    font-size: 11px; cursor: pointer; width: auto; margin: 0; white-space: nowrap; }
-  .copy:hover { border-color: var(--accent); color: var(--text); }
-  .list { margin-top: 28px; border-top: 1px solid var(--border); padding-top: 20px; }
-  .list h2 { font-size: 12px; color: var(--muted); text-transform: uppercase;
-    letter-spacing: 0.5px; margin-bottom: 12px; }
-  .item { padding: 14px 0; font-family: 'Consolas', monospace;
-    font-size: 13px; border-bottom: 1px solid var(--border); }
-  .item:last-child { border-bottom: none; }
-  .item.paused { opacity: 0.7; }
-  .item .row1 { display: flex; justify-content: space-between;
-    align-items: center; gap: 8px; }
-  .item .row2 { display: flex; justify-content: space-between;
-    align-items: center; gap: 8px; margin-top: 4px; font-size: 11px;
-    color: var(--muted); }
-  .item .key-val { word-break: break-all; }
-  .item .actions { display: flex; gap: 8px; margin-top: 12px; }
-  .btn-sm {
-    border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 600;
-    cursor: pointer; width: auto; margin: 0; background: transparent;
-    border: 1px solid var(--border); color: var(--text);
-    transition: all 0.15s;
+
+  .error-msg {
+    color: var(--err);
+    font-size: 12px;
+    margin-top: 16px;
+    display: none;
   }
-  .btn-sm.pause  { border-color: var(--warn); color: var(--warn); }
-  .btn-sm.pause:hover  { background: rgba(250,168,26,0.12); }
-  .btn-sm.resume { border-color: var(--ok); color: var(--ok); }
-  .btn-sm.resume:hover { background: rgba(59,165,93,0.12); }
-  .btn-sm.del    { border-color: var(--err); color: var(--err); }
-  .btn-sm.del:hover    { background: rgba(237,66,69,0.12); }
+
+  /* --- DASHBOARD --- */
+  .dash {
+    width: 100%;
+    max-width: 1000px;
+    display: none;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+    margin-bottom: 24px;
+  }
+
+  .header h1 {
+    font-size: 20px;
+    color: var(--accent);
+    letter-spacing: 1px;
+  }
+
+  .header span {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .header button {
+    width: auto;
+    padding: 8px 16px;
+    border-color: var(--muted);
+    color: var(--muted);
+  }
+  .header button:hover { border-color: var(--err); color: var(--err); background: transparent; }
+
+  .gen-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .gen-panel h2 {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .form-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .form-group {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .form-group input, .form-group select {
+    margin-bottom: 0;
+  }
+
+  .form-group select {
+    width: 100%;
+    background: #050505;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-size: 14px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .btn-gen {
+    width: auto;
+    padding: 12px 24px;
+    align-self: flex-end;
+  }
+
+  .table-container {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  th, td {
+    padding: 14px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    color: var(--muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: #080808;
+  }
+
+  td { font-family: 'Consolas', monospace; }
+
   .badge {
-    display: inline-block; padding: 2px 8px; border-radius: 999px;
-    font-size: 10px; font-weight: 600; letter-spacing: 0.5px;
-    text-transform: uppercase; border: 1px solid currentColor;
-    white-space: nowrap;
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
   }
-  .badge.d1 { color: #6bb5ff; } .badge.d7 { color: #9b8bff; }
-  .badge.d30 { color: #ff9b6b; } .badge.life { color: var(--ok); }
-  .badge.expired { color: var(--err); } .badge.paused { color: var(--warn); }
-  .empty { color: var(--muted); font-size: 13px; font-style: italic; }
-  .hidden { display: none !important; }
-  .logout { background: transparent; border: 1px solid var(--border);
-    color: var(--muted); padding: 8px 14px; border-radius: 8px;
-    font-size: 12px; font-weight: 500; cursor: pointer;
-    width: auto; margin: 0; float: right; }
-  .logout:hover { border-color: var(--err); color: var(--err); }
-  .tiers { display: grid; grid-template-columns: repeat(4, 1fr);
-    gap: 8px; margin-bottom: 20px; }
-  .tier { background: #0a0a0f; border: 1px solid var(--border);
-    border-radius: 10px; padding: 14px 8px; text-align: center;
-    cursor: pointer; transition: border-color 0.15s, background 0.15s;
-    user-select: none; }
-  .tier:hover { border-color: var(--accent); }
-  .tier.active { border-color: var(--accent);
-    background: rgba(88,101,242,0.12); }
-  .tier .t-label { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
-  .tier .t-desc { font-size: 10px; color: var(--muted);
-    text-transform: uppercase; letter-spacing: 0.5px; }
-  .tier.active .t-label { color: var(--accent); }
-  .stats { display: flex; gap: 16px; flex-wrap: wrap;
-    margin-top: 12px; font-size: 11px; color: var(--muted); }
-  .stats .s-paused { color: var(--warn); }
-  .stats .s-active { color: var(--ok); }
-  .who { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
-  .who b { color: var(--text); }
+
+  .badge.active { background: rgba(0,255,136,0.1); color: var(--accent); border: 1px solid var(--accent); }
+  .badge.expired { background: rgba(255,68,68,0.1); color: var(--err); border: 1px solid var(--err); }
+  .badge.paused { background: rgba(255,170,0,0.1); color: #ffaa00; border: 1px solid #ffaa00; }
+
+  .btn-action {
+    width: auto;
+    padding: 6px 10px;
+    font-size: 11px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    margin-right: 4px;
+  }
+  .btn-action:hover { border-color: var(--accent); color: var(--text); }
+  .btn-action.del:hover { border-color: var(--err); color: var(--err); }
+  
+  .empty-msg {
+    text-align: center;
+    padding: 32px;
+    color: var(--muted);
+    font-style: italic;
+  }
 </style>
 </head>
 <body>
+
   <!-- LOGIN -->
-  <div class="card" id="loginCard">
-    <div class="logo">
-      <div class="logo-dot"></div>
-      <h1>KeyGen</h1>
+  <div class="login-card" id="loginCard">
+    <h1>KEYAUTH</h1>
+    <p>painel administrativo</p>
+
+    <label>Usuário</label>
+    <input id="user" type="text" placeholder="digite o usuário" autocomplete="off">
+
+    <label>Senha</label>
+    <input id="pass" type="password" placeholder="digite a senha" autocomplete="off">
+
+    <button id="loginBtn">Entrar</button>
+    <div class="error-msg" id="errorMsg"></div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="dash" id="dashCard">
+    <div class="header">
+      <div>
+        <h1>KEYAUTH</h1>
+        <span id="whoUser">logado como —</span>
+      </div>
+      <button id="logoutBtn">Sair</button>
     </div>
-    <p class="sub">faça login pra continuar</p>
 
-    <label for="email">email</label>
-    <input id="email" type="email" placeholder="ex: evilcorp@gmail.com" autocomplete="off" spellcheck="false">
+    <div class="gen-panel">
+      <h2>Gerar Key</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Discord User ID</label>
+          <input id="uid" type="text" placeholder="ex: 1392646068868747305" maxlength="20">
+        </div>
+        <div class="form-group">
+          <label>Plano / Validade</label>
+          <select id="tier">
+            <option value="1">1 Dia</option>
+            <option value="7">7 Dias</option>
+            <option value="30">30 Dias</option>
+            <option value="life">Lifetime</option>
+          </select>
+        </div>
+        <button class="btn-gen" id="genBtn">Gerar</button>
+      </div>
+    </div>
 
-    <label for="pass">senha</label>
-    <input id="pass" type="password" placeholder="senha" autocomplete="off">
-
-    <button id="loginBtn">entrar</button>
-
-    <div class="out" id="loginOut">
-      <div class="out-text" id="loginOutText"></div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Key</th>
+            <th>Plano</th>
+            <th>Status</th>
+            <th>Expira</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr><td colspan="5" class="empty-msg">Carregando...</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
-  <!-- APP -->
-  <div class="card hidden" id="appCard">
-    <div class="logo">
-      <div class="logo-dot"></div>
-      <h1>KeyGen</h1>
-    </div>
-    <p class="sub" style="margin-bottom:8px">gere uma key a partir do id do discord</p>
-    <div class="who">logado como <b id="whoUser">—</b> <span id="whoRole"></span></div>
-    <button class="logout" id="logout">sair</button>
-    <div style="clear:both; margin-bottom:24px"></div>
-
-    <label>validade</label>
-    <div class="tiers" id="tiers">
-      <div class="tier active" data-tier="1">
-        <div class="t-label">1 dia</div>
-        <div class="t-desc">24h</div>
-      </div>
-      <div class="tier" data-tier="7">
-        <div class="t-label">7 dias</div>
-        <div class="t-desc">1 semana</div>
-      </div>
-      <div class="tier" data-tier="30">
-        <div class="t-label">30 dias</div>
-        <div class="t-desc">1 mês</div>
-      </div>
-      <div class="tier" data-tier="life">
-        <div class="t-label">lifetime</div>
-        <div class="t-desc">permanente</div>
-      </div>
-    </div>
-
-    <label for="uid">discord user id</label>
-    <input id="uid" type="text" placeholder="ex: 1392646068868747305" autocomplete="off" spellcheck="false">
-
-    <button id="gen">gerar key</button>
-
-    <div class="out" id="out">
-      <div class="out-text" id="outText"></div>
-      <button class="copy" id="copy" style="display:none">copiar</button>
-    </div>
-
-    <div class="list">
-      <h2>keys geradas</h2>
-      <div class="stats" id="stats"></div>
-      <div id="list" style="margin-top:12px;"><div class="empty">carregando…</div></div>
-    </div>
-  </div>
-
-<!-- firebase SDK (compat) -->
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
@@ -212,57 +330,178 @@ const firebaseConfig = {
   appId: "1:743340504481:web:bd3101131673d38ffe47e0"
 };
 
-const ADMIN_EMAIL = 'evilcorp@gmail.com';
-
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const db   = firebase.database();
+const db = firebase.database();
 
 const DAY = 24 * 60 * 60 * 1000;
 
-const TIER_LABEL = {
-  '1':    { label: '1 dia',    badge: 'd1' },
-  '7':    { label: '7 dias',   badge: 'd7' },
-  '30':   { label: '30 dias',  badge: 'd30' },
-  'life': { label: 'lifetime', badge: 'life' }
+// USUÁRIO E SENHA FIXOS (conforme pedido)
+const FIXED_USER = "evilcorp";
+const FIXED_PASS = "evilcorp123";
+
+// Elementos
+const $loginCard = document.getElementById('loginCard');
+const $dashCard = document.getElementById('dashCard');
+const $user = document.getElementById('user');
+const $pass = document.getElementById('pass');
+const $loginBtn = document.getElementById('loginBtn');
+const $errorMsg = document.getElementById('errorMsg');
+const $whoUser = document.getElementById('whoUser');
+const $logoutBtn = document.getElementById('logoutBtn');
+const $uid = document.getElementById('uid');
+const $tier = document.getElementById('tier');
+const $genBtn = document.getElementById('genBtn');
+const $tableBody = document.getElementById('tableBody');
+
+let keysCache = {};
+
+// --- LÓGICA DE LOGIN FIXA ---
+// Como tu quer que TODO MUNDO veja as keys, não vamos usar o Firebase Auth de verdade.
+// Usamos um login local: se acertar a senha, o site "entra" na dashboard e puxa os dados do banco.
+$loginBtn.addEventListener('click', () => {
+  const u = $user.value.trim();
+  const p = $pass.value;
+
+  if (u === FIXED_USER && p === FIXED_PASS) {
+    $loginCard.style.display = 'none';
+    $dashCard.style.display = 'block';
+    $whoUser.textContent = `logado como ${u}`;
+    $errorMsg.style.display = 'none';
+
+    // Autentica anonimamente no Firebase só pra ter permissão de leitura/escrita no DB
+    auth.signInAnonymously().catch(err => {
+      alert("Erro no Firebase. Ativou o login anônimo? Erro: " + err.message);
+    });
+  } else {
+    $errorMsg.textContent = 'usuário ou senha incorretos';
+    $errorMsg.style.display = 'block';
+  }
+});
+
+$pass.addEventListener('keydown', e => { if (e.key === 'Enter') $loginBtn.click(); });
+
+$logoutBtn.addEventListener('click', () => {
+  auth.signOut();
+  $dashCard.style.display = 'none';
+  $loginCard.style.display = 'block';
+  $user.value = '';
+  $pass.value = '';
+});
+
+// --- CONEXÃO COM O BANCO (Realtime Database) ---
+auth.onAuthStateChanged(user => {
+  if (user) {
+    const ref = db.ref('keys');
+    ref.on('value', snap => {
+      keysCache = snap.val() || {};
+      renderTable();
+    });
+  }
+});
+
+function renderTable() {
+  const entries = Object.values(keysCache);
+  
+  if (entries.length === 0) {
+    $tableBody.innerHTML = '<tr><td colspan="5" class="empty-msg">Nenhuma key gerada ainda.</td></tr>';
+    return;
+  }
+
+  // Ordena do mais recente pro mais antigo
+  entries.sort((a, b) => b.issuedAt - a.issuedAt);
+
+  let html = '';
+  entries.forEach(k => {
+    const isExpired = !k.paused && Date.now() > expiresAt(k);
+    
+    let statusHtml = '';
+    if (k.paused) statusHtml = '<span class="badge paused">Pausada</span>';
+    else if (isExpired) statusHtml = '<span class="badge expired">Expirada</span>';
+    else statusHtml = '<span class="badge active">Ativa</span>';
+
+    const expDate = k.tier === 'life' ? 'Nunca' : formatDate(expiresAt(k));
+    
+    // Botões de ação (Todo mundo que logar pode pausar/excluir, já que o login é geral)
+    const actions = `
+      ${k.paused 
+        ? `<button class="btn-action" onclick="window.resumeKey('${k.id}')">Liberar</button>`
+        : `<button class="btn-action" onclick="window.pauseKey('${k.id}')">Pausar</button>`
+      }
+      <button class="btn-action del" onclick="window.deleteKey('${k.id}')">Excluir</button>
+    `;
+
+    html += `
+      <tr>
+        <td>${k.key}</td>
+        <td>${getTierName(k.tier)}</td>
+        <td>${statusHtml}</td>
+        <td>${expDate}</td>
+        <td>${actions}</td>
+      </tr>
+    `;
+  });
+
+  $tableBody.innerHTML = html;
+}
+
+// --- GERAR KEY ---
+$genBtn.addEventListener('click', async () => {
+  const id = $uid.value.trim();
+  if (!/^\d{17,20}$/.test(id)) {
+    alert('ID do Discord inválido (deve ter 17 a 20 números).');
+    return;
+  }
+
+  if (keysCache[id]) {
+    alert('Já existe uma key para esse ID.');
+    return;
+  }
+
+  const now = Date.now();
+  const entry = {
+    id: id,
+    key: id,
+    tier: $tier.value,
+    issuedAt: now,
+    paused: true, // Nasce pausada por padrão
+    pausedAt: now
+  };
+
+  try {
+    $genBtn.textContent = '...';
+    await db.ref('keys/' + id).set(entry);
+    $uid.value = '';
+  } catch (err) {
+    alert('Erro ao gerar: ' + err.message);
+  } finally {
+    $genBtn.textContent = 'Gerar';
+  }
+});
+
+// --- AÇÕES NA TABELA (GLOBAIS) ---
+window.pauseKey = async (id) => {
+  await db.ref('keys/' + id).update({ paused: true, pausedAt: Date.now() });
 };
 
-const $loginCard = document.getElementById('loginCard');
-const $appCard   = document.getElementById('appCard');
-const $email     = document.getElementById('email');
-const $pass      = document.getElementById('pass');
-const $loginBtn  = document.getElementById('loginBtn');
-const $loginOut  = document.getElementById('loginOut');
-const $loginOutT = document.getElementById('loginOutText');
-const $logout    = document.getElementById('logout');
-const $tiers     = document.getElementById('tiers');
-const $uid       = document.getElementById('uid');
-const $gen       = document.getElementById('gen');
-const $out       = document.getElementById('out');
-const $outT      = document.getElementById('outText');
-const $copy      = document.getElementById('copy');
-const $list      = document.getElementById('list');
-const $stats     = document.getElementById('stats');
-const $whoUser   = document.getElementById('whoUser');
-const $whoRole   = document.getElementById('whoRole');
+window.resumeKey = async (id) => {
+  const entry = keysCache[id];
+  if (!entry) return;
+  const pausedMs = Date.now() - (entry.pausedAt || entry.issuedAt);
+  await db.ref('keys/' + id).update({
+    paused: false,
+    pausedAt: null,
+    issuedAt: entry.issuedAt + pausedMs // Empurra o tempo de emissão pra frente
+  });
+};
 
-let selectedTier = '1';
-let currentUser  = null;
-let isAdmin      = false;
-let keysCache    = {};
+window.deleteKey = async (id) => {
+  if (confirm(`Excluir a key ${id}?`)) {
+    await db.ref('keys/' + id).remove();
+  }
+};
 
-function showLoginMsg(text, kind) {
-  $loginOut.className = 'out show ' + kind;
-  $loginOutT.textContent = text;
-}
-function hideLoginMsg() { $loginOut.className = 'out'; }
-
-function showMsg(text, kind) {
-  $out.className = 'out show ' + kind;
-  $outT.textContent = text;
-  $copy.style.display = kind === 'ok' ? 'block' : 'none';
-}
-
+// --- FUNÇÕES AUXILIARES ---
 function expiresAt(e) {
   if (e.tier === 'life') return Infinity;
   const dur = parseInt(e.tier, 10) * DAY;
@@ -272,247 +511,18 @@ function expiresAt(e) {
   }
   return e.issuedAt + dur;
 }
-function isExpired(e) { return !e.paused && Date.now() > expiresAt(e); }
 
-function fmtRemaining(e) {
-  if (e.tier === 'life') return e.paused ? 'pausada · permanente' : 'permanente';
-  if (e.paused) {
-    const dur = parseInt(e.tier, 10) * DAY;
-    const used = (e.pausedAt || e.issuedAt) - e.issuedAt;
-    const left = dur - used;
-    const d = Math.floor(left / DAY);
-    const h = Math.floor((left % DAY) / (60*60*1000));
-    const m = Math.floor((left % (60*60*1000)) / (60*1000));
-    if (d > 0) return `pausada · ${d}d ${h}h restantes`;
-    if (h > 0) return `pausada · ${h}h ${m}m restantes`;
-    return `pausada · ${m}m restantes`;
-  }
-  const ms = expiresAt(e) - Date.now();
-  if (ms <= 0) return 'expirada';
-  const d = Math.floor(ms / DAY);
-  const h = Math.floor((ms % DAY) / (60*60*1000));
-  const m = Math.floor((ms % (60*60*1000)) / (60*1000));
-  if (d > 0) return `${d}d ${h}h restantes`;
-  if (h > 0) return `${h}h ${m}m restantes`;
-  return `${m}m restantes`;
-}
-function fmtDate(ts) {
-  if (ts === Infinity) return '—';
+function formatDate(ts) {
+  if (ts === Infinity) return 'Nunca';
   const d = new Date(ts);
   const p = n => String(n).padStart(2, '0');
   return `${p(d.getDate())}/${p(d.getMonth()+1)}/${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}`;
 }
 
-function render() {
-  const entries = Object.values(keysCache);
-
-  const visible = isAdmin
-    ? entries
-    : entries.filter(e => e.owner === currentUser.uid);
-
-  const active  = visible.filter(e => !e.paused && !isExpired(e)).length;
-  const paused  = visible.filter(e => e.paused).length;
-  const expired = visible.filter(e => !e.paused && isExpired(e)).length;
-  const lives   = visible.filter(e => e.tier === 'life').length;
-
-  $stats.innerHTML =
-    `<span>total: ${visible.length}</span>` +
-    `<span class="s-active">liberadas: ${active}</span>` +
-    `<span class="s-paused">pausadas: ${paused}</span>` +
-    `<span>expiradas: ${expired}</span>` +
-    `<span>lifetime: ${lives}</span>`;
-
-  if (!visible.length) {
-    $list.innerHTML = '<div class="empty">nenhuma ainda</div>';
-    return;
-  }
-
-  const sorted = visible.slice().sort((a, b) => b.issuedAt - a.issuedAt);
-
-  $list.innerHTML = sorted.map(k => {
-    const meta   = TIER_LABEL[k.tier] || TIER_LABEL['1'];
-    const paused = !!k.paused;
-    const exp    = !paused && isExpired(k);
-
-    let badgeCls = meta.badge, badgeTxt = meta.label;
-    if (paused) { badgeCls = 'paused'; badgeTxt = 'pausada'; }
-    else if (exp) { badgeCls = 'expired'; badgeTxt = 'expirada'; }
-
-    const expLine = k.tier === 'life'
-      ? 'sem expiração'
-      : 'expira: ' + fmtDate(expiresAt(k));
-
-    const ownerLine = isAdmin
-      ? `<div class="row2"><span>dono: ${k.ownerEmail || k.owner}</span><span></span></div>`
-      : '';
-
-    const actions = isAdmin
-      ? `<div class="actions">
-           ${paused
-             ? `<button class="btn-sm resume" data-act="resume" data-key="${k.id}">liberar key</button>`
-             : `<button class="btn-sm pause"  data-act="pause"  data-key="${k.id}">pausar key</button>`}
-           <button class="btn-sm del" data-act="del" data-key="${k.id}">excluir</button>
-         </div>`
-      : '';
-
-    return `
-      <div class="item ${paused ? 'paused' : ''}">
-        <div class="row1">
-          <div class="key-val">${k.key}</div>
-          <span class="badge ${badgeCls}">${badgeTxt}</span>
-        </div>
-        ${ownerLine}
-        <div class="row2">
-          <span>id: ${k.key}</span>
-          <span>${fmtRemaining(k)}</span>
-        </div>
-        <div class="row2">
-          <span>emitida: ${fmtDate(k.issuedAt)}</span>
-          <span>${expLine}</span>
-        </div>
-        ${actions}
-      </div>`;
-  }).join('');
+function getTierName(tier) {
+  const map = { '1': '1 Dia', '7': '7 Dias', '30': '30 Dias', 'life': 'Lifetime' };
+  return map[tier] || tier;
 }
-
-auth.onAuthStateChanged(user => {
-  if (user) {
-    currentUser = user;
-    isAdmin = (user.email || '').toLowerCase() === ADMIN_EMAIL.toLowerCase();
-
-    $whoUser.textContent = user.email;
-    $whoRole.textContent = isAdmin ? '· admin' : '· user';
-
-    $loginCard.classList.add('hidden');
-    $appCard.classList.remove('hidden');
-    $uid.focus();
-
-    listenKeys();
-  } else {
-    currentUser = null;
-    isAdmin = false;
-    keysCache = {};
-    $appCard.classList.add('hidden');
-    $loginCard.classList.remove('hidden');
-    hideLoginMsg();
-  }
-});
-
-$loginBtn.addEventListener('click', () => {
-  const email = $email.value.trim();
-  const pass  = $pass.value;
-  if (!email || !pass) { showLoginMsg('preencha email e senha', 'err'); return; }
-
-  $loginBtn.disabled = true;
-  auth.signInWithEmailAndPassword(email, pass)
-    .catch(err => showLoginMsg(traduzErro(err), 'err'))
-    .finally(() => { $loginBtn.disabled = false; });
-});
-$pass.addEventListener('keydown', e => { if (e.key === 'Enter') $loginBtn.click(); });
-
-$logout.addEventListener('click', () => auth.signOut());
-
-function traduzErro(err) {
-  const m = err && err.code || '';
-  if (m.includes('invalid-email'))       return 'email inválido';
-  if (m.includes('user-not-found'))      return 'usuário não existe';
-  if (m.includes('wrong-password'))      return 'senha incorreta';
-  if (m.includes('invalid-credential'))  return 'email ou senha incorretos';
-  if (m.includes('too-many-requests'))   return 'muitas tentativas, espera um pouco';
-  if (m.includes('network'))             return 'falha de rede';
-  return err.message || 'erro ao entrar';
-}
-
-let detach = null;
-function listenKeys() {
-  if (detach) detach();
-  const ref = db.ref('keys');
-  const cb = ref.on('value', snap => {
-    keysCache = snap.val() || {};
-    render();
-  }, err => {
-    $list.innerHTML = `<div class="empty">erro ao carregar: ${err.message}</div>`;
-  });
-  detach = () => ref.off('value', cb);
-}
-
-$tiers.addEventListener('click', e => {
-  const t = e.target.closest('.tier');
-  if (!t) return;
-  selectedTier = t.dataset.tier;
-  $tiers.querySelectorAll('.tier').forEach(el =>
-    el.classList.toggle('active', el === t));
-});
-
-$gen.addEventListener('click', async () => {
-  const id = $uid.value.trim();
-
-  if (!/^\d{17,20}$/.test(id)) {
-    showMsg('id inválido (17–20 dígitos numéricos)', 'err');
-    return;
-  }
-  if (keysCache[id]) {
-    showMsg('já existe key pra esse id', 'err');
-    return;
-  }
-
-  const now = Date.now();
-  const entry = {
-    id,
-    key: id,
-    tier: selectedTier,
-    issuedAt: now,
-    paused: true,
-    pausedAt: now,
-    owner: currentUser.uid,
-    ownerEmail: currentUser.email || ''
-  };
-
-  try {
-    await db.ref('keys/' + id).set(entry);
-    showMsg(`${id}  (gerada pausada — admin precisa liberar)`, 'ok');
-    $uid.value = '';
-  } catch (err) {
-    showMsg('falha ao salvar: ' + err.message, 'err');
-  }
-});
-$uid.addEventListener('keydown', e => { if (e.key === 'Enter') $gen.click(); });
-
-$list.addEventListener('click', async e => {
-  const btn = e.target.closest('button[data-act]');
-  if (!btn || !isAdmin) return;
-
-  const keyId = btn.dataset.key;
-  const act   = btn.dataset.act;
-  const entry = keysCache[keyId];
-  if (!entry) return;
-
-  const ref = db.ref('keys/' + keyId);
-
-  try {
-    if (act === 'pause') {
-      await ref.update({ paused: true, pausedAt: Date.now() });
-    } else if (act === 'resume') {
-      const pausedMs = Date.now() - (entry.pausedAt || entry.issuedAt);
-      await ref.update({
-        paused: false,
-        pausedAt: null,
-        issuedAt: entry.issuedAt + pausedMs
-      });
-    } else if (act === 'del') {
-      if (!confirm(`excluir a key ${keyId}?\n\nisso não pode ser desfeito.`)) return;
-      await ref.remove();
-    }
-  } catch (err) {
-    showMsg('erro: ' + err.message, 'err');
-  }
-});
-
-$copy.addEventListener('click', () => {
-  navigator.clipboard.writeText($outT.textContent.split('  ')[0]);
-  $copy.textContent = 'copiado';
-  setTimeout(() => $copy.textContent = 'copiar', 1200);
-});
 </script>
 </body>
 </html>
